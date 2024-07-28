@@ -2,46 +2,108 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+	"strconv"
+	"time"
 
-	"github.com/astaxie/beego/orm"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-type User struct {
-	Id    int    `orm:"column(id);auto"`
-	Email string `orm:"column(email);null"`
-	Fname string `orm:"column(fname);null"`
-	Sname string `orm:"column(sname);null"`
+const version = "0.0.1"
+
+// Dummy user data for authentication
+var dummyUser = struct {
+	Username string
+	Password string
+}{
+	Username: "user",
+	Password: "pass",
 }
 
-func (t *User) TableName() string { return "yp_user" }
-func init() {
-	// Register the MySQL driver orm.RegisterDriver("mysql", orm.DRMySQL)
-	// Register the default database
-	orm.RegisterDataBase("default", "mysql", "root:jjhWmrXthSYGrWaoPelxRwzuzklCBwJG@tcp(monorail.proxy.rlwy.net:25594)/railway?charset=utf8")
-	// Register model
-	orm.RegisterModel(new(User))
-	// Create table
-	orm.RunSyncdb("default", false, false)
+type config struct {
+	port int
 }
+
+type application struct {
+	config config
+	logger *logrus.Logger
+}
+
 func main() {
-	o := orm.NewOrm()
-	// Insert data
-	// user := User{Email: "Alice", Fname: "30"}
-	// id, err := o.Insert(&user)
-	// if err != nil {
-	// fmt.Println("Error inserting data:", err)
-	// } else {
-	// fmt.Println("Data inserted with ID:", id) // }
-	// Read data
-	var users []User
-	num, err := o.QueryTable("yp_user").All(&users)
+
+	var cfg config
+
+	// Try to read environment variable for port (given by railway). Otherwise use default
+	port := os.Getenv("PORT")
+	intPort, err := strconv.Atoi(port)
 	if err != nil {
-		fmt.Println("Error reading data:", err)
+		intPort = 4000
+	}
+
+	// Set the port to run the API on
+	cfg.port = intPort
+
+	// Create the logger
+	logger := logrus.New()
+	logger.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp: true,
+	})
+
+	// Create the application
+	app := &application{
+		config: cfg,
+		logger: logger,
+	}
+
+	// Initialize Gin router
+	r := gin.Default()
+
+	// Setup routes
+	app.routes(r)
+
+	// Create the server
+	serverAddr := fmt.Sprintf(":%d", cfg.port)
+	srv := &http.Server{
+		Addr:         serverAddr,
+		Handler:      r,
+		IdleTimeout:  45 * time.Second,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	logger.Info("server started", "addr", serverAddr)
+
+	// Start the server
+	if err := srv.ListenAndServe(); err != nil {
+		logger.WithError(err).Error("server error")
+		os.Exit(1)
+	}
+}
+
+func (app *application) routes(r *gin.Engine) {
+	r.POST("/login", app.handleLogin)
+}
+
+// handleLogin handles user login requests
+func (app *application) handleLogin(c *gin.Context) {
+	var credentials struct {
+		Username string `json:"username" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
+
+	// Bind the JSON request body to the credentials struct
+	if err := c.ShouldBindJSON(&credentials); err != nil {
+		app.logger.WithError(err).Error("invalid request payload")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// Mock authentication
+	if credentials.Username == dummyUser.Username && credentials.Password == dummyUser.Password {
+		c.JSON(http.StatusOK, gin.H{"message": "Login successful"})
 	} else {
-		fmt.Printf("Read %d users\n", num)
-		for _, user := range users {
-			fmt.Printf("ID: %d, Name: %s, Age: %s\n", user.Id, user.Email, user.Fname)
-		}
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 	}
 }
