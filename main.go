@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"BACKEND/tech/login"
@@ -45,11 +44,12 @@ func main() {
 	var cfg config
 
 	// Try to read environment variable for port (given by railway). Otherwise use default
-	port := os.Getenv("PORT")
-	intPort, err := strconv.Atoi(port)
-	if err != nil {
-		intPort = 4000
-	}
+	// port := os.Getenv("PORT")
+	// intPort, err := strconv.Atoi(port)
+	// if err != nil {
+	// 	intPort = 4000
+	// }
+	intPort := 4000
 
 	// Set the port to run the API on
 	cfg.port = intPort
@@ -92,10 +92,8 @@ func main() {
 }
 
 func (app *application) routes(r *gin.Engine) {
-	router := r.Group("/v1")
-	{
-		router.POST("/otp", app.sendOtps)
-	}
+	fmt.Println("started ")
+	r.POST("/otp", app.sendOtps)
 	r.POST("/login", app.handleLogin)
 }
 
@@ -131,9 +129,8 @@ func (app *application) sendOtps(c *gin.Context) {
 		return
 	}
 
-	if otpRequest.Action == "" {
-		login.GenerateOtp()
-	}
+	res := login.GenerateOtp()
+	c.JSON(http.StatusOK, gin.H{"message": res})
 }
 
 // type LoginResponse struct {
