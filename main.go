@@ -7,11 +7,13 @@ import (
 	"strconv"
 	"time"
 
+	"BACKEND/tech/login"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
-const version = "0.0.1"
+// const version = "0.0.1"
 
 // Dummy user data for authentication
 var dummyUser = struct {
@@ -29,6 +31,13 @@ type config struct {
 type application struct {
 	config config
 	logger *logrus.Logger
+}
+
+type OtpRequest struct {
+	Action string `json:"action" binding:"required,alpha"`
+	Email  string `json:"email"`
+	Otp    string `json:"otp"`
+	Token  string `json:"token"`
 }
 
 func main() {
@@ -83,6 +92,10 @@ func main() {
 }
 
 func (app *application) routes(r *gin.Engine) {
+	router := r.Group("/v1")
+	{
+		router.POST("/otp", app.sendOtps)
+	}
 	r.POST("/login", app.handleLogin)
 }
 
@@ -107,3 +120,26 @@ func (app *application) handleLogin(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 	}
 }
+
+func (app *application) sendOtps(c *gin.Context) {
+
+	otpRequest := OtpRequest{}
+	//
+	if err := c.ShouldBindJSON(&otpRequest); err != nil {
+		app.logger.WithError(err).Error("invalid request payload")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	if otpRequest.Action == "" {
+		login.GenerateOtp()
+	}
+}
+
+// type LoginResponse struct {
+// }
+
+// func GenerateOtp() *LoginResponse {
+// 	// SendEmail("", "", []byte)
+// 	return &LoginResponse{}
+// }
