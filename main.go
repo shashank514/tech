@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"BACKEND/tech/login"
@@ -44,12 +45,12 @@ func main() {
 	var cfg config
 
 	// Try to read environment variable for port (given by railway). Otherwise use default
-	// port := os.Getenv("PORT")
-	// intPort, err := strconv.Atoi(port)
-	// if err != nil {
-	// 	intPort = 4000
-	// }
-	intPort := 4000
+	port := os.Getenv("PORT")
+	intPort, err := strconv.Atoi(port)
+	if err != nil {
+		intPort = 4000
+	}
+	// intPort := 4000
 
 	// Set the port to run the API on
 	cfg.port = intPort
