@@ -21,6 +21,9 @@ func DBConnectionWithEnvMiddleware(c *gin.Context) {
 }
 
 func SetupMysqlConnections() error {
-	err := orm.RegisterDataBase("default", "mysql", "u374538722_sql:Sql@2023@tcp(srv687.hstgr.io:3306)/u374538722_newsql?charset=utf8", 30, 100)
+	_, err := orm.GetDB("default")
+	if err != nil {
+		err = orm.RegisterDataBase("default", "mysql", "u374538722_sql:Sql@2023@tcp(srv687.hstgr.io:3306)/u374538722_newsql?charset=utf8", 30, 100)
+	}
 	return err
 }
