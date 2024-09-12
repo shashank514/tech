@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/tech/handler"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
 
-	"BACKEND/tech/login"
+	"github.com/tech/login"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -44,7 +45,7 @@ func main() {
 
 	var cfg config
 
-	// Try to read environment variable for port (given by railway). Otherwise use default
+	// Try to read environment variable for port (given by railway). Otherwise, use default
 	port := os.Getenv("PORT")
 	intPort, err := strconv.Atoi(port)
 	if err != nil {
@@ -94,8 +95,10 @@ func main() {
 
 func (app *application) routes(r *gin.Engine) {
 	fmt.Println("started ")
-	r.POST("/otp", app.sendOtps)
-	r.POST("/login", app.handleLogin)
+	r.POST("/otp/new", app.sendOtps)
+	r.POST("/otp", app.handleLogin)
+	handler.SetupRoutes(r.Group("/login"))
+
 }
 
 // handleLogin handles user login requests
