@@ -20,8 +20,5 @@ func SetupRoutes(router *gin.RouterGroup) {
 
 	otp := login2.UserOtp(loginSvc)
 
-	subRouter := router.Group("/login")
-	{
-		subRouter.POST("/otp", otp)
-	}
+	router.POST("/otp", otp)
 }

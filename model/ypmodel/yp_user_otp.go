@@ -13,7 +13,7 @@ type YpUserOtp struct {
 	Otp       string    `orm:"column(otp);null"`
 	Token     string    `orm:"column(token);size(32);null"`
 	SentTo    string    `orm:"column(sentTo);size(64);null"`
-	Validated int8      `orm:"column(validated);null"`
+	Validated int       `orm:"column(validated);null"`
 	UpdatedOn time.Time `orm:"column(updatedOn);type(datetime);null;auto_now"`
 	CreatedOn time.Time `orm:"column(createdOn);type(datetime);null;auto_now_add"`
 	Tries     int       `orm:"column(tries);null"`
@@ -37,5 +37,11 @@ func (t *YpUserOtp) GetYpUserOtpByToken(token string) (otp *YpUserOtp, err error
 	o := orm.NewOrm()
 	otp = &YpUserOtp{}
 	err = o.QueryTable(t.TableName()).Filter("token", token).One(otp)
+	return
+}
+
+func (t *YpUserOtp) UpdateYpUserOtpByColumn(columns ...string) (err error) {
+	o := orm.NewOrm()
+	_, err = o.Update(t, columns...)
 	return
 }

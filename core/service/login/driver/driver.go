@@ -7,4 +7,5 @@ import (
 
 type LoginService interface {
 	GenerateOtpForUser(c context.Context, otpRequest *domain.OtpRequest) domain.Response
+	SubmitOtpForUser(c context.Context, otpRequest *domain.OtpRequest) domain.Response
 }

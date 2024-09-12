@@ -21,7 +21,17 @@ func UserOtp(svc driver.LoginService) gin.HandlerFunc {
 			return
 		}
 
-		response := svc.GenerateOtpForUser(exeCtx, requestBody)
+		response := domain.Response{}
+
+		switch requestBody.Action {
+		case "generate":
+			response = svc.GenerateOtpForUser(exeCtx, requestBody)
+		case "submit":
+			response = svc.SubmitOtpForUser(exeCtx, requestBody)
+		default:
+			response.Code = "600"
+		}
+
 		c.JSON(http.StatusOK, response)
 	}
 }

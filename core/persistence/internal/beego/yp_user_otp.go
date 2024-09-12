@@ -20,6 +20,12 @@ func (t *BeegoUserOtp) GetYpUserOtpByToken(token string) (otp *domain.UserOtp, e
 	return t.convertModelToDomain(v), nil
 }
 
+func (t *BeegoUserOtp) UpdateYpUserOtpByColumn(data *domain.UserOtp, column ...string) (err error) {
+	v := t.convertDomainToModel(data)
+	err = v.UpdateYpUserOtpByColumn(column...)
+	return err
+}
+
 func (t *BeegoUserOtp) convertDomainToModel(data *domain.UserOtp) *ypmodel.YpUserOtp {
 	return &ypmodel.YpUserOtp{
 		Id:        data.Id,

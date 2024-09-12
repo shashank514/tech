@@ -21,7 +21,7 @@ type UserOtp struct {
 	Token     string
 	SentTo    string
 	Tries     int
-	Validated int8
+	Validated int
 	UpdatedOn time.Time
 	CreatedOn time.Time
 }
@@ -44,4 +44,5 @@ type OtpResponse struct {
 	Token       string `json:"token"`
 	CustomToken string `json:"customToken"`
 	UserState   string `json:"userState"`
+	Auth        string `json:"auth"`
 }

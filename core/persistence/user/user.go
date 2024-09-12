@@ -29,6 +29,7 @@ func YpUserDetails() YpUser {
 type YpUserOtp interface {
 	AddYUserOtp(otp *domain.UserOtp) (id int64, err error)
 	GetYpUserOtpByToken(token string) (otp *domain.UserOtp, err error)
+	UpdateYpUserOtpByColumn(data *domain.UserOtp, column ...string) (err error)
 }
 
 func YpUserOtpDetails() YpUserOtp {
