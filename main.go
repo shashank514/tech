@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/tech/handler"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/tech/handler"
 
 	"github.com/tech/login"
 
@@ -51,7 +52,7 @@ func main() {
 	if err != nil {
 		intPort = 4000
 	}
-	intPort = 4000
+	// intPort = 4000
 
 	// Set the port to run the API on
 	cfg.port = intPort

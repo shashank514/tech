@@ -6,7 +6,7 @@ import (
 
 	"github.com/astaxie/beego/orm"
 	"github.com/gin-gonic/gin"
-	// Import MySQL driver
+	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
 )
 
 func DBConnectionWithEnvMiddleware(c *gin.Context) {
