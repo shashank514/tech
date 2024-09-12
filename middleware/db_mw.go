@@ -2,9 +2,11 @@ package middleware
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
 )
 
 func DBConnectionWithEnvMiddleware(c *gin.Context) {
