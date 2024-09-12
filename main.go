@@ -72,9 +72,9 @@ func main() {
 
 	// Custom CORS settings
 	config := cors.Config{
-		// AllowOrigins:     []string{"http://example.com"}, // Set allowed origins
+		AllowOrigins: []string{"*"}, // Set allowed origins
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		// AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+		AllowHeaders: []string{"Origin", "Authorization", "Content-Type"},
 		// ExposeHeaders:    []string{"Content-Length"},
 		// AllowCredentials: true,
 	}
