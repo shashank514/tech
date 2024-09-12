@@ -11,6 +11,7 @@ import (
 
 	"github.com/tech/login"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -69,8 +70,18 @@ func main() {
 		logger: logger,
 	}
 
+	// Custom CORS settings
+	config := cors.Config{
+		// AllowOrigins:     []string{"http://example.com"}, // Set allowed origins
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		// AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+		// ExposeHeaders:    []string{"Content-Length"},
+		// AllowCredentials: true,
+	}
+
 	// Initialize Gin router
 	r := gin.Default()
+	r.Use(cors.New(config))
 
 	// Setup routes
 	app.routes(r)
