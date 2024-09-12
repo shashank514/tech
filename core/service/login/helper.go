@@ -1,6 +1,7 @@
 package login
 
 import (
+	rands "crypto/rand"
 	"io"
 	"math/rand"
 	"time"
