@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/tech/handler"
 	"net/http"
 	"os"
 	"strconv"
@@ -94,8 +95,10 @@ func main() {
 
 func (app *application) routes(r *gin.Engine) {
 	fmt.Println("started ")
-	r.POST("/otp", app.sendOtps)
-	r.POST("/login", app.handleLogin)
+	r.POST("/otp/new", app.sendOtps)
+	r.POST("/otp", app.handleLogin)
+	handler.SetupRoutes(r.Group("/login"))
+
 }
 
 // handleLogin handles user login requests
