@@ -3,6 +3,7 @@ package beego
 import (
 	"github.com/tech/core/domain"
 	"github.com/tech/model/ypmodel"
+	"time"
 )
 
 type BeegoUserOtp struct{}
@@ -24,6 +25,14 @@ func (t *BeegoUserOtp) UpdateYpUserOtpByColumn(data *domain.UserOtp, column ...s
 	v := t.convertDomainToModel(data)
 	err = v.UpdateYpUserOtpByColumn(column...)
 	return err
+}
+
+func (t *BeegoUserOtp) GetYpUserOtpCount(sentTo string, today time.Time) (counts int, data *domain.UserOtp) {
+	count, a := new(ypmodel.YpUserOtp).GetYpUserOtpCount(sentTo, today)
+	if count == 0 {
+		return 0, nil
+	}
+	return count, t.convertModelToDomain(a)
 }
 
 func (t *BeegoUserOtp) convertDomainToModel(data *domain.UserOtp) *ypmodel.YpUserOtp {

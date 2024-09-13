@@ -4,11 +4,24 @@ import (
 	rands "crypto/rand"
 	"io"
 	"math/rand"
+	"net"
+	"strings"
 	"time"
 )
 
 var Numbers = []rune("123456789")
 var letters = []byte{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+
+func isDomainValid(email string) bool {
+	parts := strings.Split(email, "@")
+	if len(parts) != 2 {
+		return false
+	}
+	domain := parts[1]
+
+	_, err := net.LookupMX(domain) // Looks up Mail Exchange (MX) records
+	return err == nil
+}
 
 func RandAlphanumeric(n int) string {
 	a := make([]byte, n)
@@ -32,4 +45,19 @@ func GenerateRandomOtp(n int) string {
 		b[i] = Numbers[rand.Intn(len(Numbers))]
 	}
 	return string(b)
+}
+
+// returns today's date for calculations wrt UTC columns in DB
+func todaysDate() (today string) {
+	// IST date - current DATE
+	loc, _ := time.LoadLocation("Asia/Kolkata")
+	istDate := time.Now().In(loc).Format("2006-01-02")
+	utcDate := time.Now().Format("2006-01-02")
+	today = ""
+	if istDate != utcDate {
+		today = utcDate
+	} else {
+		today = time.Now().AddDate(0, 0, -1).Format("2006-01-02")
+	}
+	return today + " 18:30:01"
 }

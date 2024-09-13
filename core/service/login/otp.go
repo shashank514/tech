@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/astaxie/beego/orm"
+	"github.com/spf13/cast"
 	"github.com/tech/cloud/message"
 	"github.com/tech/core/domain"
 	"github.com/tech/core/persistence/user"
@@ -29,6 +30,12 @@ func (b *Login) GenerateOtpForUser(c context.Context, otpRequest *domain.OtpRequ
 	response := &domain.OtpResponse{}
 	otpDigits := 6
 
+	//check email domain
+	if !isDomainValid(otpRequest.Email) {
+		fmt.Println("invalid email")
+		return domain.Response{Code: "420", Msg: "invalid email"}
+	}
+
 	// get user details from yp_user
 	userDetails, err := b.userPersistence.YpUserPersistence.GetYPUserByEmail(otpRequest.Email)
 	if err != nil && err != orm.ErrNoRows {
@@ -39,15 +46,24 @@ func (b *Login) GenerateOtpForUser(c context.Context, otpRequest *domain.OtpRequ
 			Email: otpRequest.Email,
 		}
 
-		_, err = b.userPersistence.YpUserPersistence.AddYPUser(userDetails)
+		id, err := b.userPersistence.YpUserPersistence.AddYPUser(userDetails)
 		if err != nil {
 			fmt.Println(function, err)
 			return domain.Response{Code: "452", Msg: "err while creating user"}
 		}
+		userDetails.Id = cast.ToInt(id)
+	}
+
+	blockForTheDay, otp := b.CheckResendConditions(otpRequest.Email)
+	if blockForTheDay {
+		fmt.Println("user is block for the day to generate otp")
+		return domain.Response{Code: "459", Msg: "otp is block"}
 	}
 
 	response.OtpDigits = otpDigits
-	otp := GenerateRandomOtp(otpDigits)
+	if otp == "" {
+		otp = GenerateRandomOtp(otpDigits)
+	}
 	token := RandAlphanumeric(12)
 	response.Token = token
 
@@ -91,7 +107,7 @@ func (b *Login) SubmitOtpForUser(c context.Context, otpRequest *domain.OtpReques
 
 	if otpDetails.Tries > 3 {
 		fmt.Println(function, "Submit invalid otp 3 times")
-		return domain.Response{Code: "452", Msg: "Submit invalid otp 3 times"}
+		return domain.Response{Code: "452", Msg: "Submit invalid otp 3 times generate otp"}
 	}
 
 	if otpDetails.SentTo != otpRequest.Email {
@@ -127,6 +143,33 @@ func (b *Login) SubmitOtpForUser(c context.Context, otpRequest *domain.OtpReques
 	}
 
 	return domain.Response{Code: "200", Msg: "success", Model: response}
+}
+
+func (b *Login) CheckResendConditions(sentTo string) (bool, string) {
+	var count int
+	var row *domain.UserOtp
+	today, _ := time.Parse("2006-01-02 15:04:05", todaysDate())
+	count, row = b.userPersistence.UserOtpPersistence.GetYpUserOtpCount(sentTo, today)
+	var blockForTheDay bool
+	var oldOTP string
+	// if there is no row, then return  false and empty for otp
+	if count == 0 {
+		return blockForTheDay, oldOTP
+	}
+	//if the OTP is already validated then generate a new OTP
+	if row.Validated == 1 {
+		return blockForTheDay, oldOTP
+	}
+	// if there are previous OTPs' and total OTP count is below the limit send the same OTP
+	if count > 0 && count < cast.ToInt(3) {
+		oldOTP = cast.ToString(row.Otp)
+		return blockForTheDay, oldOTP
+	}
+	// if the total OTP count exceeds the lilmit and the throttle limit has not reached then stop the resend of otp
+	if count >= cast.ToInt(4) {
+		blockForTheDay = true
+	}
+	return blockForTheDay, oldOTP
 }
 
 func (b *Login) AddUserOtpToDB(uid int, otp string, sentTo string, token string) error {

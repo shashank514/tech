@@ -2,6 +2,7 @@ package ypmodel
 
 import (
 	"github.com/astaxie/beego/orm"
+	"github.com/spf13/cast"
 	"time"
 )
 
@@ -44,4 +45,17 @@ func (t *YpUserOtp) UpdateYpUserOtpByColumn(columns ...string) (err error) {
 	o := orm.NewOrm()
 	_, err = o.Update(t, columns...)
 	return
+}
+
+func (t *YpUserOtp) GetYpUserOtpCount(sentTo string, today time.Time) (counts int, otp *YpUserOtp) {
+	o := orm.NewOrm()
+	v := []YpUserOtp{}
+	count, err := o.QueryTable(t.TableName()).Filter("sentTo", sentTo).Filter("sentOn__gte", today).OrderBy("-id").All(&v)
+	if err == nil {
+		if count == 0 {
+			return 0, nil
+		}
+		return cast.ToInt(count), &v[0]
+	}
+	return 0, nil
 }

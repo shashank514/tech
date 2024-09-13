@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/tech/core/domain"
 	"github.com/tech/core/persistence/internal/beego"
+	"time"
 )
 
 type User struct {
@@ -30,6 +31,7 @@ type YpUserOtp interface {
 	AddYUserOtp(otp *domain.UserOtp) (id int64, err error)
 	GetYpUserOtpByToken(token string) (otp *domain.UserOtp, err error)
 	UpdateYpUserOtpByColumn(data *domain.UserOtp, column ...string) (err error)
+	GetYpUserOtpCount(sentTo string, today time.Time) (counts int, data *domain.UserOtp)
 }
 
 func YpUserOtpDetails() YpUserOtp {
