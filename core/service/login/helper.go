@@ -2,7 +2,6 @@ package login
 
 import (
 	rands "crypto/rand"
-	"fmt"
 	"io"
 	"math/rand"
 	"net"
@@ -51,10 +50,11 @@ func GenerateRandomOtp(n int) string {
 // returns today's date for calculations wrt UTC columns in DB
 func todaysDate() (today string) {
 	// IST date - current DATE
-	loc, hdh := time.LoadLocation("Asia/Kolkata")
-	fmt.Println(hdh)
-	fmt.Println(loc)
-	istDate := time.Now().In(loc).Format("2006-01-02")
+	//loc, hdh := time.LoadLocation("Asia/Kolkata")
+	//fmt.Println(hdh)
+	//fmt.Println(loc)
+	location := time.FixedZone("IST", 5*60*60+30*60)
+	istDate := time.Now().In(location).Format("2006-01-02")
 	utcDate := time.Now().Format("2006-01-02")
 	today = ""
 	if istDate != utcDate {
