@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/tech/handler/userLogin"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/tech/handler"
 
 	"github.com/tech/login"
 
@@ -109,7 +108,7 @@ func (app *application) routes(r *gin.Engine) {
 	fmt.Println("started ")
 	r.POST("/otp/new", app.sendOtps)
 	r.POST("/otp", app.handleLogin)
-	handler.SetupRoutes(r.Group("/login"))
+	userLogin.SetupRoutes(r.Group("/login"))
 
 }
 

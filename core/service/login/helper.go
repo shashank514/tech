@@ -2,12 +2,29 @@ package login
 
 import (
 	rands "crypto/rand"
+	"fmt"
+	"github.com/spf13/cast"
+	"github.com/tech/core/domain"
+	"github.com/tech/util"
 	"io"
 	"math/rand"
 	"net"
 	"strings"
 	"time"
 )
+
+func (b *Login) GetNewToken(requestBody *domain.NewToken) domain.Response {
+	response := domain.NewToken{}
+	getData, err := util.DecodeToken(requestBody.Token)
+	if err != nil {
+		fmt.Println("error decoding token ", err)
+		return domain.Response{Code: "452", Msg: "error decoding token"}
+	}
+
+	response.Token = util.GenereateToken(cast.ToString(getData["auth"]))
+	return domain.Response{Code: "200", Msg: "success", Model: response}
+
+}
 
 var Numbers = []rune("123456789")
 var letters = []byte{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
@@ -17,9 +34,9 @@ func isDomainValid(email string) bool {
 	if len(parts) != 2 {
 		return false
 	}
-	domain := parts[1]
+	domains := parts[1]
 
-	_, err := net.LookupMX(domain) // Looks up Mail Exchange (MX) records
+	_, err := net.LookupMX(domains) // Looks up Mail Exchange (MX) records
 	return err == nil
 }
 

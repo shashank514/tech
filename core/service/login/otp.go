@@ -9,6 +9,7 @@ import (
 	"github.com/tech/core/domain"
 	"github.com/tech/core/persistence/user"
 	"github.com/tech/core/service/login/driver"
+	"github.com/tech/util"
 	"time"
 )
 
@@ -43,7 +44,9 @@ func (b *Login) GenerateOtpForUser(c context.Context, otpRequest *domain.OtpRequ
 		return domain.Response{Code: "452", Msg: "err while user details"}
 	} else if err == orm.ErrNoRows {
 		userDetails = &domain.User{
-			Email: otpRequest.Email,
+			Auth:   util.GenereateAuthToken(otpRequest.Email),
+			Email:  otpRequest.Email,
+			Status: "personalDetails",
 		}
 
 		id, err := b.userPersistence.YpUserPersistence.AddYPUser(userDetails)
@@ -105,7 +108,7 @@ func (b *Login) SubmitOtpForUser(c context.Context, otpRequest *domain.OtpReques
 		return domain.Response{Code: "452", Msg: "err while get otp from token"}
 	}
 
-	if otpDetails.Tries > 3 {
+	if otpDetails.Tries >= 3 {
 		fmt.Println(function, "Submit invalid otp 3 times")
 		return domain.Response{Code: "452", Msg: "Submit invalid otp 3 times generate otp"}
 	}
@@ -134,13 +137,8 @@ func (b *Login) SubmitOtpForUser(c context.Context, otpRequest *domain.OtpReques
 		fmt.Println(function, err)
 	}
 	response.Token = otpRequest.Token
-	if userDetails.Mobile == "" {
-		response.UserState = "kyc"
-		response.Auth = userDetails.Auth
-	} else {
-		response.UserState = "home"
-		response.CustomToken = "cuebdyucvdcbudbcsdbcdbcudbcb"
-	}
+	response.UserState = userDetails.Status
+	response.CustomToken = util.GenereateToken(userDetails.Auth)
 
 	return domain.Response{Code: "200", Msg: "success", Model: response}
 }
@@ -152,22 +150,25 @@ func (b *Login) CheckResendConditions(sentTo string) (bool, string) {
 	count, row = b.userPersistence.UserOtpPersistence.GetYpUserOtpCount(sentTo, today)
 	var blockForTheDay bool
 	var oldOTP string
+
 	// if there is no row, then return  false and empty for otp
 	if count == 0 {
 		return blockForTheDay, oldOTP
 	}
+
 	//if the OTP is already validated then generate a new OTP
 	if row.Validated == 1 {
 		return blockForTheDay, oldOTP
 	}
+
+	if count > cast.ToInt(3) {
+		blockForTheDay = true
+	}
+
 	// if there are previous OTPs' and total OTP count is below the limit send the same OTP
-	if count > 0 && count < cast.ToInt(3) {
+	if count > 0 && count <= cast.ToInt(3) {
 		oldOTP = cast.ToString(row.Otp)
 		return blockForTheDay, oldOTP
-	}
-	// if the total OTP count exceeds the lilmit and the throttle limit has not reached then stop the resend of otp
-	if count >= cast.ToInt(4) {
-		blockForTheDay = true
 	}
 	return blockForTheDay, oldOTP
 }

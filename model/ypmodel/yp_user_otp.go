@@ -12,8 +12,8 @@ type YpUserOtp struct {
 	SentOn    time.Time `orm:"column(sentOn);type(datetime);null"`
 	Validity  time.Time `orm:"column(validity);type(datetime);null"`
 	Otp       string    `orm:"column(otp);null"`
-	Token     string    `orm:"column(token);size(32);null"`
-	SentTo    string    `orm:"column(sentTo);size(64);null"`
+	Token     string    `orm:"column(token);null"`
+	SentTo    string    `orm:"column(sentTo);null"`
 	Validated int       `orm:"column(validated);null"`
 	UpdatedOn time.Time `orm:"column(updatedOn);type(datetime);null;auto_now"`
 	CreatedOn time.Time `orm:"column(createdOn);type(datetime);null;auto_now_add"`

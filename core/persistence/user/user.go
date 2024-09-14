@@ -7,20 +7,24 @@ import (
 )
 
 type User struct {
-	YpUserPersistence  YpUser
-	UserOtpPersistence YpUserOtp
+	YpUserPersistence      YpUser
+	UserOtpPersistence     YpUserOtp
+	UserAddressPersistence YpUserAddress
 }
 
 func NewUser() *User {
 	return &User{
-		YpUserPersistence:  YpUserDetails(),
-		UserOtpPersistence: YpUserOtpDetails(),
+		YpUserPersistence:      YpUserDetails(),
+		UserOtpPersistence:     YpUserOtpDetails(),
+		UserAddressPersistence: YpUserAddressDetails(),
 	}
 }
 
 type YpUser interface {
 	AddYPUser(user *domain.User) (id int64, err error)
 	GetYPUserByEmail(email string) (user *domain.User, err error)
+	GetYpUserByAuth(auth string) (user *domain.User, err error)
+	UpdateYpUserByColumn(data *domain.User, column ...string) (err error)
 }
 
 func YpUserDetails() YpUser {
@@ -36,4 +40,12 @@ type YpUserOtp interface {
 
 func YpUserOtpDetails() YpUserOtp {
 	return &beego.BeegoUserOtp{}
+}
+
+type YpUserAddress interface {
+	AddYpUserAddress(address *domain.UserAddress) (id int64, err error)
+}
+
+func YpUserAddressDetails() YpUserAddress {
+	return &beego.BeegoUserAddress{}
 }
