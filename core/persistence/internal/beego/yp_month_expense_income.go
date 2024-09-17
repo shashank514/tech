@@ -24,6 +24,19 @@ func (t *BeegoMonthIncomeExpense) GetMonthIncomeExpenseByYear(uid int, year int)
 	return nil, err
 }
 
+func (t *BeegoMonthIncomeExpense) GetDetailsUsingUidAndMonth(uid int, month string, year int) (data *domain.MonthIncomeExpense, err error) {
+	v, err := new(ypmodel.YpMonthIncomeExpense).GetDetailsUsingUidAndMonth(uid, month, year)
+	if err != nil {
+		return nil, err
+	}
+	return t.convertModelToDomain(v), nil
+}
+
+func (t *BeegoMonthIncomeExpense) UpdateMonthIncomeExpenseByColumns(date *domain.MonthIncomeExpense, columns ...string) error {
+	v := t.convertDomainToModel(date)
+	return v.UpdateYpMonthIncomeExpenseByColumn(columns...)
+}
+
 func (t *BeegoMonthIncomeExpense) convertDomainToModel(data *domain.MonthIncomeExpense) *ypmodel.YpMonthIncomeExpense {
 	return &ypmodel.YpMonthIncomeExpense{
 		Id:             data.Id,

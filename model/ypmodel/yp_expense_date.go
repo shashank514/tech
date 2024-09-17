@@ -35,3 +35,16 @@ func (t *YpExpenseDate) GetYpExpenseDateById(uid int, month string, year int) (v
 	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("month", month).Filter("year", year).All(&v)
 	return v, err
 }
+
+func (t *YpExpenseDate) GetYpExpenseDateByUidAndDate(uid int, date int, month string, year int) (v *YpExpenseDate, err error) {
+	o := orm.NewOrm()
+	v = &YpExpenseDate{}
+	err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("date", date).Filter("month", month).Filter("year", year).One(v)
+	return
+}
+
+func (t *YpExpenseDate) UpdateYpExpenseDateByColumn(columns ...string) (err error) {
+	o := orm.NewOrm()
+	_, err = o.Update(t, columns...)
+	return
+}

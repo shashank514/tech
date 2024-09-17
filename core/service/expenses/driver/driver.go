@@ -7,4 +7,5 @@ import (
 
 type ExpenseService interface {
 	GetUserYearExpenses(ctx context.Context, user *domain.User, year int) domain.Response
+	AddExpense(ctx context.Context, user *domain.User, request *domain.ExpenseRequest) domain.Response
 }

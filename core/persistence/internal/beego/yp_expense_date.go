@@ -24,6 +24,19 @@ func (t *BeegoExpenseDate) GetYpExpenseDateById(uid int, month string, year int)
 	return nil, err
 }
 
+func (t *BeegoExpenseDate) UpdateYpExpenseDateByColumns(date *domain.ExpenseDate, columns ...string) error {
+	v := t.convertDomainToModel(date)
+	return v.UpdateYpExpenseDateByColumn(columns...)
+}
+
+func (t *BeegoExpenseDate) GetYpExpenseDateByUidAndDate(uid int, date int, month string, year int) (data *domain.ExpenseDate, err error) {
+	v, err := new(ypmodel.YpExpenseDate).GetYpExpenseDateByUidAndDate(uid, date, month, year)
+	if err != nil {
+		return nil, err
+	}
+	return t.convertModelToDomain(v), nil
+}
+
 func (t *BeegoExpenseDate) convertDomainToModel(data *domain.ExpenseDate) *ypmodel.YpExpenseDate {
 	return &ypmodel.YpExpenseDate{
 		Id:        data.Id,

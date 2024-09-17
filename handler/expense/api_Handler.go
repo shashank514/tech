@@ -20,6 +20,8 @@ func SetupRoutes(router *gin.RouterGroup) {
 	expenseSvc := expenses.ExpensesDetails(messages, expensePersist)
 
 	getUserExpense := userExpense.GetUserExpense(expenseSvc)
+	addExpense := userExpense.AddUserExpense(expenseSvc)
 
 	router.GET("/getExpenses", getUserExpense)
+	router.POST("/addExpenses", addExpense)
 }

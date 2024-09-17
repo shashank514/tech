@@ -36,3 +36,16 @@ func (t *YpMonthIncomeExpense) GetYpMonthIncomeExpenseByYear(uid int, year int) 
 	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("year", year).All(&v)
 	return
 }
+
+func (t *YpMonthIncomeExpense) GetDetailsUsingUidAndMonth(uid int, month string, year int) (v *YpMonthIncomeExpense, err error) {
+	o := orm.NewOrm()
+	v = &YpMonthIncomeExpense{}
+	err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("month", month).Filter("year", year).One(v)
+	return
+}
+
+func (t *YpMonthIncomeExpense) UpdateYpMonthIncomeExpenseByColumn(columns ...string) (err error) {
+	o := orm.NewOrm()
+	_, err = o.Update(t, columns...)
+	return
+}

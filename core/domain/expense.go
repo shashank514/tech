@@ -23,3 +23,17 @@ type MonthIncomeExpense struct {
 	UpdatedOn      time.Time
 	CreatedOn      time.Time
 }
+
+type Expense struct {
+	Id          int
+	Uid         int
+	Date        int
+	Month       string
+	Year        int
+	Amount      string
+	Category    string
+	PaymentMode string
+	Description string
+	UpdatedOn   time.Time
+	CreatedOn   time.Time
+}
