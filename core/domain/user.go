@@ -42,26 +42,6 @@ type UserAddress struct {
 	CreatedOn time.Time
 }
 
-type Response struct {
-	Code  string      `json:"code"`
-	Msg   string      `json:"msg"`
-	Model interface{} `json:"model"`
-}
-
-type OtpRequest struct {
-	Action string `json:"action" binding:"required,alpha"`
-	Email  string `json:"email"`
-	Otp    string `json:"otp"`
-	Token  string `json:"token"`
-}
-
-type OtpResponse struct {
-	OtpDigits   int    `json:"otpDigits"`
-	Token       string `json:"token"`
-	CustomToken string `json:"customToken"`
-	UserState   string `json:"userState"`
-}
-
 type PersonalDetails struct {
 	Name       string `json:"name"`
 	Mobile     string `json:"mobile"`

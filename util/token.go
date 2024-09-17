@@ -10,7 +10,7 @@ import (
 
 func GenereateToken(auth string) string {
 	userExpertDate := time.Now().AddDate(0, 0, 10)
-	tokenExpertDate := userExpertDate.AddDate(0, 0, 1)
+	tokenExpertDate := time.Now().AddDate(0, 0, 1)
 	body := `{"auth":"` + auth + `","userExpert":"` + cast.ToString(userExpertDate) + `","tokenExpert":"` + cast.ToString(tokenExpertDate) + `"}`
 	return base64.StdEncoding.EncodeToString([]byte(body))
 }

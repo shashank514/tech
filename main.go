@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/tech/handler/expense"
 	"github.com/tech/handler/userLogin"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/tech/login"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -106,9 +105,9 @@ func main() {
 
 func (app *application) routes(r *gin.Engine) {
 	fmt.Println("started ")
-	r.POST("/otp/new", app.sendOtps)
 	r.POST("/otp", app.handleLogin)
 	userLogin.SetupRoutes(r.Group("/login"))
+	expense.SetupRoutes(r.Group("/expense"))
 
 }
 
@@ -133,25 +132,3 @@ func (app *application) handleLogin(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 	}
 }
-
-func (app *application) sendOtps(c *gin.Context) {
-
-	otpRequest := OtpRequest{}
-	//
-	if err := c.ShouldBindJSON(&otpRequest); err != nil {
-		app.logger.WithError(err).Error("invalid request payload")
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
-		return
-	}
-
-	res := login.GenerateOtp()
-	c.JSON(http.StatusOK, gin.H{"message": res})
-}
-
-// type LoginResponse struct {
-// }
-
-// func GenerateOtp() *LoginResponse {
-// 	// SendEmail("", "", []byte)
-// 	return &LoginResponse{}
-// }
