@@ -31,13 +31,13 @@ func (t *Expenses) GetUserYearExpenses(ctx context.Context, user *domain.User, y
 
 	// get user expenses of the year from yp_month_expense_income
 	expenseDetails, err := t.expensePersistence.MonthIncomeExpensePersistence.GetMonthIncomeExpenseByYear(user.Id, year)
-	if err != nil || len(expenseDetails) == 0 {
+	if err != nil {
 		fmt.Println(funcName, err)
-		return domain.Response{Code: "452", Msg: err.Error()}
+		return domain.Response{Code: "452", Msg: "err.Error()"}
 	}
 
-	if len(expenseDetails) == 0 {
-		return domain.Response{Code: "452", Msg: "expenses not found"}
+	if expenseDetails == nil {
+		return domain.Response{Code: "453", Msg: "expenses not found"}
 	}
 
 	expenseInGroup := make(map[string]*domain.MonthIncomeExpense, len(expenseDetails))
