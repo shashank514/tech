@@ -16,13 +16,34 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	var DateLabels []string
 	var DateExpenses []string
 
-	userAllDetails, err := t.expensePersistence.ExpenseDetailsPersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
+	userDetailsByDate, err := t.expensePersistence.ExpenseDatePersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, err)
 		return domain.Response{Code: "452", Msg: "err.Error()"}
 	}
+	fmt.Println(" userDetailsByDate ", userDetailsByDate)
+
+	if userDetailsByDate == nil {
+		fmt.Println(funcName, "no Expenses of user err :", err)
+		return domain.Response{Code: "453", Msg: "expenses not found"}
+	}
+
+	for _, details := range userDetailsByDate {
+		DateLabels = append(DateLabels, cast.ToString(details.Date))
+		DateExpenses = append(DateExpenses, cast.ToString(details.Amount))
+	}
+	response.DateLabels = DateLabels
+	response.DateExpenses = DateExpenses
+
+	userAllDetails, err := t.expensePersistence.ExpenseDetailsPersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
+	if err != nil {
+		fmt.Println(funcName, "no Expenses of user err :", err)
+		return domain.Response{Code: "452", Msg: "err.Error()"}
+	}
+	fmt.Println(" userAllDetails ", userAllDetails)
 
 	if userAllDetails == nil {
+
 		fmt.Println(funcName, "no Expenses of user")
 		return domain.Response{Code: "453", Msg: "expenses not found"}
 	}
@@ -37,24 +58,6 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	}
 	response.CategoryLabels = CategoryLabels
 	response.CategoriesExpenses = CategoriesExpenses
-
-	userDetailsByDate, err := t.expensePersistence.ExpenseDatePersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
-	if err != nil {
-		fmt.Println(funcName, err)
-		return domain.Response{Code: "452", Msg: "err.Error()"}
-	}
-
-	if userDetailsByDate == nil {
-		fmt.Println(funcName, "no Expenses of user")
-		return domain.Response{Code: "453", Msg: "expenses not found"}
-	}
-
-	for _, details := range userDetailsByDate {
-		DateLabels = append(DateLabels, cast.ToString(details.Date))
-		DateExpenses = append(DateExpenses, cast.ToString(details.Amount))
-	}
-	response.DateLabels = DateLabels
-	response.DateExpenses = DateExpenses
 
 	return domain.Response{Code: "200", Msg: "success", Model: response}
 }

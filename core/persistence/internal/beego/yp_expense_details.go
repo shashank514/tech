@@ -13,7 +13,7 @@ func (t *BeegoExpenseDetails) AddUserExpense(details *domain.Expense) (id int64,
 }
 
 func (t *BeegoExpenseDetails) GetYpExpenseDateById(uid int, month string, year int) (data []*domain.Expense, err error) {
-	v, err := new(ypmodel.YpExpenseDetails).GetYpExpenseDateById(uid, month, year)
+	v, err := new(ypmodel.YpExpenseDetails).GetUserExpenseById(uid, month, year)
 	if err == nil {
 		for _, details := range v {
 			data = append(data, t.convertModelToDomain(details))

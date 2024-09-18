@@ -33,7 +33,7 @@ func (t *YpExpenseDetails) AddUserExpense() (id int64, err error) {
 	return
 }
 
-func (t *YpExpenseDetails) GetYpExpenseDateById(uid int, month string, year int) (v []*YpExpenseDetails, err error) {
+func (t *YpExpenseDetails) GetUserExpenseById(uid int, month string, year int) (v []*YpExpenseDetails, err error) {
 	o := orm.NewOrm()
 	v = []*YpExpenseDetails{}
 	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("month", month).Filter("year", year).All(&v)
