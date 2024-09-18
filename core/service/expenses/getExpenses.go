@@ -16,6 +16,8 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	var DateLabels []string
 	var DateExpenses []string
 
+	fmt.Println("user id ", user.Id, "month ", month, "year ", year)
+
 	userDetailsByDate, err := t.expensePersistence.ExpenseDatePersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, err)

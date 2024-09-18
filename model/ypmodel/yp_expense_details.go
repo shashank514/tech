@@ -25,6 +25,7 @@ func (t *YpExpenseDetails) TableName() string {
 
 func init() {
 	orm.RegisterModel(new(YpExpenseDetails))
+	orm.Debug = true
 }
 
 func (t *YpExpenseDetails) AddUserExpense() (id int64, err error) {
