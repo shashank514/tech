@@ -18,3 +18,10 @@ type UserExpenseYearResponse struct {
 	Labels    []string `json:"labels"`
 	Expenses  []string `json:"expenses"`
 }
+
+type UserExpenseResponse struct {
+	CategoryLabels     []string `json:"categoryLabels"`
+	CategoriesExpenses []string `json:"categoriesExpenses"`
+	DateLabels         []string `json:"dateLabels"`
+	DateExpenses       []string `json:"dateExpenses"`
+}

@@ -17,7 +17,8 @@ func GetUserExpense(svc driver.ExpenseService) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		exeCtx = util.SetContext(c)
-		year := cast.ToInt(c.Query("year"))
+
+		types := cast.ToString(c.Query("type"))
 
 		user := c.Keys["customer"]
 		if user == nil {
@@ -29,7 +30,19 @@ func GetUserExpense(svc driver.ExpenseService) gin.HandlerFunc {
 
 		loggedUser := user.(*domain.User)
 
-		response := svc.GetUserYearExpenses(exeCtx, loggedUser, year)
+		response := domain.Response{}
+		switch types {
+		case "home":
+			year := cast.ToInt(c.Query("year"))
+			response = svc.GetUserYearExpenses(exeCtx, loggedUser, year)
+		case "expenses":
+			month := cast.ToInt(c.Query("month"))
+			year := cast.ToInt(c.Query("year"))
+			response = svc.GetUserExpenses(exeCtx, loggedUser, year, month)
+		default:
+			response.Code = "400"
+			response.Msg = "invalid Query par"
+		}
 		c.JSON(http.StatusOK, response)
 	}
 }
