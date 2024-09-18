@@ -7,7 +7,7 @@ import (
 	"github.com/tech/core/domain"
 )
 
-func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month string, year int) domain.Response {
+func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month int, year int) domain.Response {
 	funcName := "GetUserExpenses"
 	response := domain.UserExpenseResponse{}
 	addCategoryNames := make(map[string]int)
@@ -19,7 +19,7 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 
 	fmt.Println("user id ", user.Id, "month ", month, "year ", year)
 
-	userAllDetails, err := t.expensePersistence.ExpenseDetailsPersistence.GetYpExpenseDateById(user.Id, month, year)
+	userAllDetails, err := t.expensePersistence.ExpenseDetailsPersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, "no Expenses of user err :", err)
 		return domain.Response{Code: "452", Msg: "err.Error()"}
@@ -42,7 +42,7 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	response.CategoryLabels = CategoryLabels
 	response.CategoriesExpenses = CategoriesExpenses
 
-	userDetailsByDate, err := t.expensePersistence.ExpenseDatePersistence.GetYpExpenseDateById(user.Id, month, year)
+	userDetailsByDate, err := t.expensePersistence.ExpenseDatePersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, err)
 		return domain.Response{Code: "452", Msg: "err.Error()"}
