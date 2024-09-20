@@ -44,6 +44,8 @@ func YpMonthExpenseIncomeDetails() YpMonthExpenseIncome {
 type YpExpenseDetails interface {
 	AddUserExpense(details *domain.Expense) (id int64, err error)
 	GetYpExpenseDateById(uid int, month string, year int) (data []*domain.Expense, err error)
+	GetUserExpenseByUidAndCategory(uid int, category, month string, year int) (data []*domain.Expense, err error)
+	GetUserExpenseByUidAndPaymentMode(uid int, paymentMode, month string, year int) (data []*domain.Expense, err error)
 }
 
 func YpExpenseDetailsDetails() YpExpenseDetails {

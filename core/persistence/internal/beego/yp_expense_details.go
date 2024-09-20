@@ -23,6 +23,28 @@ func (t *BeegoExpenseDetails) GetYpExpenseDateById(uid int, month string, year i
 	return nil, err
 }
 
+func (t *BeegoExpenseDetails) GetUserExpenseByUidAndCategory(uid int, category, month string, year int) (data []*domain.Expense, err error) {
+	v, err := new(ypmodel.YpExpenseDetails).GetUserExpenseByUidAndCategory(uid, category, month, year)
+	if err == nil {
+		for _, details := range v {
+			data = append(data, t.convertModelToDomain(details))
+		}
+		return data, nil
+	}
+	return nil, err
+}
+
+func (t *BeegoExpenseDetails) GetUserExpenseByUidAndPaymentMode(uid int, paymentMode, month string, year int) (data []*domain.Expense, err error) {
+	v, err := new(ypmodel.YpExpenseDetails).GetUserExpenseByUidAndPaymentMode(uid, paymentMode, month, year)
+	if err == nil {
+		for _, details := range v {
+			data = append(data, t.convertModelToDomain(details))
+		}
+		return data, nil
+	}
+	return nil, err
+}
+
 func (t *BeegoExpenseDetails) convertDomainToModel(data *domain.Expense) *ypmodel.YpExpenseDetails {
 	return &ypmodel.YpExpenseDetails{
 		Id:          data.Id,

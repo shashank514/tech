@@ -40,3 +40,17 @@ func (t *YpExpenseDetails) GetUserExpenseById(uid int, month string, year int) (
 	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("month", month).Filter("year", year).All(&v)
 	return v, err
 }
+
+func (t *YpExpenseDetails) GetUserExpenseByUidAndCategory(uid int, category, month string, year int) (v []*YpExpenseDetails, err error) {
+	o := orm.NewOrm()
+	v = []*YpExpenseDetails{}
+	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("category", category).Filter("month", month).Filter("year", year).All(&v)
+	return v, err
+}
+
+func (t *YpExpenseDetails) GetUserExpenseByUidAndPaymentMode(uid int, paymentMode, month string, year int) (v []*YpExpenseDetails, err error) {
+	o := orm.NewOrm()
+	v = []*YpExpenseDetails{}
+	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("payment_mode", paymentMode).Filter("month", month).Filter("year", year).All(&v)
+	return v, err
+}

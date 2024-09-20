@@ -39,6 +39,12 @@ func GetUserExpense(svc driver.ExpenseService) gin.HandlerFunc {
 			month := cast.ToInt(c.Query("month"))
 			year := cast.ToInt(c.Query("year"))
 			response = svc.GetUserExpenses(exeCtx, loggedUser, month, year)
+		case "transaction":
+			category := cast.ToString(c.Query("category"))
+			paymentMode := cast.ToString(c.Query("paymentMode"))
+			month := cast.ToInt(c.Query("month"))
+			year := cast.ToInt(c.Query("year"))
+			response = svc.GetUserExpensesByCategorys(exeCtx, loggedUser, category, paymentMode, month, year)
 		default:
 			response.Code = "400"
 			response.Msg = "invalid Query par"
