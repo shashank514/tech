@@ -39,26 +39,28 @@ func (t *BeegoMonthIncomeExpense) UpdateMonthIncomeExpenseByColumns(date *domain
 
 func (t *BeegoMonthIncomeExpense) convertDomainToModel(data *domain.MonthIncomeExpense) *ypmodel.YpMonthIncomeExpense {
 	return &ypmodel.YpMonthIncomeExpense{
-		Id:             data.Id,
-		Uid:            data.Uid,
-		Month:          data.Month,
-		Year:           data.Year,
-		IncomeAmount:   data.IncomeAmount,
-		ExpensesAmount: data.ExpensesAmount,
-		CreatedOn:      data.CreatedOn,
-		UpdatedOn:      data.UpdatedOn,
+		Id:               data.Id,
+		Uid:              data.Uid,
+		Month:            data.Month,
+		Year:             data.Year,
+		IncomeAmount:     data.IncomeAmount,
+		ExpensesAmount:   data.ExpensesAmount,
+		ExpensesCategory: data.ExpensesCategory,
+		CreatedOn:        data.CreatedOn,
+		UpdatedOn:        data.UpdatedOn,
 	}
 }
 
 func (t *BeegoMonthIncomeExpense) convertModelToDomain(data *ypmodel.YpMonthIncomeExpense) *domain.MonthIncomeExpense {
 	return &domain.MonthIncomeExpense{
-		Id:             data.Id,
-		Uid:            data.Uid,
-		Month:          data.Month,
-		Year:           data.Year,
-		IncomeAmount:   data.IncomeAmount,
-		ExpensesAmount: data.ExpensesAmount,
-		CreatedOn:      data.CreatedOn,
-		UpdatedOn:      data.UpdatedOn,
+		Id:               data.Id,
+		Uid:              data.Uid,
+		Month:            data.Month,
+		Year:             data.Year,
+		IncomeAmount:     data.IncomeAmount,
+		ExpensesAmount:   data.ExpensesAmount,
+		ExpensesCategory: data.ExpensesCategory,
+		CreatedOn:        data.CreatedOn,
+		UpdatedOn:        data.UpdatedOn,
 	}
 }

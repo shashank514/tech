@@ -6,14 +6,15 @@ import (
 )
 
 type YpMonthIncomeExpense struct {
-	Id             int       `orm:"column(id);auto"`
-	Uid            int       `orm:"column(uid);null"`
-	Month          string    `orm:"column(month);null"`
-	Year           int       `orm:"column(year);null"`
-	IncomeAmount   string    `orm:"column(income_amount);null"`
-	ExpensesAmount string    `orm:"column(expenses_amount);null"`
-	UpdatedOn      time.Time `orm:"column(updatedOn);type(datetime);null;auto_now"`
-	CreatedOn      time.Time `orm:"column(createdOn);type(datetime);null;auto_now_add"`
+	Id               int       `orm:"column(id);auto"`
+	Uid              int       `orm:"column(uid);null"`
+	Month            string    `orm:"column(month);null"`
+	Year             int       `orm:"column(year);null"`
+	IncomeAmount     string    `orm:"column(income_amount);null"`
+	ExpensesAmount   string    `orm:"column(expenses_amount);null"`
+	ExpensesCategory string    `orm:"column(expenses_category);null"`
+	UpdatedOn        time.Time `orm:"column(updatedOn);type(datetime);null;auto_now"`
+	CreatedOn        time.Time `orm:"column(createdOn);type(datetime);null;auto_now_add"`
 }
 
 func (t *YpMonthIncomeExpense) TableName() string {

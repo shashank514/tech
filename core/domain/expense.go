@@ -14,14 +14,15 @@ type ExpenseDate struct {
 }
 
 type MonthIncomeExpense struct {
-	Id             int
-	Uid            int
-	Month          string
-	Year           int
-	IncomeAmount   string
-	ExpensesAmount string
-	UpdatedOn      time.Time
-	CreatedOn      time.Time
+	Id               int
+	Uid              int
+	Month            string
+	Year             int
+	IncomeAmount     string
+	ExpensesAmount   string
+	ExpensesCategory string
+	UpdatedOn        time.Time
+	CreatedOn        time.Time
 }
 
 type Expense struct {

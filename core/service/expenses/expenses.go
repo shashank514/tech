@@ -8,6 +8,7 @@ import (
 	"github.com/tech/core/domain"
 	"github.com/tech/core/persistence/expense"
 	"github.com/tech/core/service/expenses/driver"
+	"strings"
 	"time"
 )
 
@@ -148,12 +149,13 @@ func (t *Expenses) AddExpense(ctx context.Context, user *domain.User, request *d
 	if err == orm.ErrNoRows {
 
 		monthNewEntry := &domain.MonthIncomeExpense{
-			Uid:            user.Id,
-			Month:          mapIdAndMonth[request.Month],
-			Year:           request.Year,
-			ExpensesAmount: request.Amount,
-			CreatedOn:      time.Now(),
-			UpdatedOn:      time.Now(),
+			Uid:              user.Id,
+			Month:            mapIdAndMonth[request.Month],
+			Year:             request.Year,
+			ExpensesAmount:   request.Amount,
+			ExpensesCategory: request.Category,
+			CreatedOn:        time.Now(),
+			UpdatedOn:        time.Now(),
 		}
 
 		_, err = t.expensePersistence.MonthIncomeExpensePersistence.AddMonthIncomeExpense(monthNewEntry)
@@ -163,11 +165,26 @@ func (t *Expenses) AddExpense(ctx context.Context, user *domain.User, request *d
 		}
 	} else if err == nil {
 
+		categoryName := strings.Split(monthDetails.ExpensesCategory, ",")
+		catNameIsPresent := false
+
+		for _, category := range categoryName {
+			if category == request.Category {
+				catNameIsPresent = true
+				break
+			}
+		}
+
 		monthDetails.ExpensesAmount += request.Amount
 		monthDetails.UpdatedOn = time.Now()
 		updateColumns := []string{
 			"income_amount",
 			"updatedOn",
+		}
+
+		if !catNameIsPresent {
+			monthDetails.ExpensesCategory = monthDetails.ExpensesCategory + ("," + request.Category)
+			updateColumns = append(updateColumns, "expenses_category")
 		}
 
 		err = t.expensePersistence.MonthIncomeExpensePersistence.UpdateMonthIncomeExpenseByColumns(monthDetails, updateColumns...)

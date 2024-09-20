@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cast"
 	"github.com/tech/core/domain"
+	"strings"
 )
 
 func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month int, year int) domain.Response {
@@ -71,16 +72,16 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 func (t *Expenses) GetUserExpensesByCategorys(ctx context.Context, user *domain.User, categorys string, paymentMode string, month int, year int) domain.Response {
 	funcName := "GetUserExpensesByCategorys"
 	response := domain.CategoryExpenseResponse{}
-	allOfferName := make(map[string]bool)
-	offerName := []string{
-		"all",
-	}
-	allPaymentMode := make(map[string]bool)
-	paymentModes := []string{
-		"all",
+
+	var userAllDetails []*domain.Expense
+	var err error
+
+	if categorys == "all" {
+		userAllDetails, err = t.expensePersistence.ExpenseDetailsPersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
+	} else {
+		userAllDetails, err = t.expensePersistence.ExpenseDetailsPersistence.GetUserExpenseByUidAndCategory(user.Id, categorys, mapIdAndMonth[month], year)
 	}
 
-	userAllDetails, err := t.expensePersistence.ExpenseDetailsPersistence.GetUserExpenseByUidAndCategory(user.Id, categorys, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, "no Expenses of user err :", err)
 		return domain.Response{Code: "452", Msg: "err.Error()"}
@@ -91,14 +92,13 @@ func (t *Expenses) GetUserExpensesByCategorys(ctx context.Context, user *domain.
 		return domain.Response{Code: "453", Msg: "expenses not found"}
 	}
 
-	for _, details := range userAllDetails {
-		if !allOfferName[details.Category] {
-			allOfferName[details.Category] = true
-			offerName = append(offerName, details.Category)
-		}
+	monthDetails, err := t.expensePersistence.MonthIncomeExpensePersistence.GetDetailsUsingUidAndMonth(user.Id, mapIdAndMonth[month], year)
+	if err != nil {
+		fmt.Println(funcName, "no Expenses of user err :", err)
+		return domain.Response{Code: "452", Msg: "err.Error()"}
 	}
 
-	response.CategoryNames = offerName
+	response.CategoryNames = strings.Split(monthDetails.ExpensesCategory, ",")
 	response.UserCategoryExpense = userAllDetails
 
 	userDetailsByPayment, err := t.expensePersistence.ExpenseDetailsPersistence.GetUserExpenseByUidAndPaymentMode(user.Id, paymentMode, mapIdAndMonth[month], year)
@@ -112,14 +112,7 @@ func (t *Expenses) GetUserExpensesByCategorys(ctx context.Context, user *domain.
 		return domain.Response{Code: "453", Msg: "expenses not found"}
 	}
 
-	for _, details := range userDetailsByPayment {
-		if !allPaymentMode[details.PaymentMode] {
-			allPaymentMode[details.PaymentMode] = true
-			paymentModes = append(paymentModes, details.PaymentMode)
-		}
-	}
-
-	response.PaymentModeNames = paymentModes
+	//response.PaymentModeNames = paymentModes
 	response.UserPaymentExpense = userDetailsByPayment
 
 	return domain.Response{Code: "200", Msg: "success", Model: response}
