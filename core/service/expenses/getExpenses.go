@@ -99,6 +99,7 @@ func (t *Expenses) GetUserExpensesByCategorys(ctx context.Context, user *domain.
 	}
 
 	response.CategoryNames = strings.Split(monthDetails.ExpensesCategory, ",")
+	response.CategoryNames = append(response.CategoryNames, "all")
 	response.UserCategoryExpense = userAllDetails
 
 	userDetailsByPayment, err := t.expensePersistence.ExpenseDetailsPersistence.GetUserExpenseByUidAndPaymentMode(user.Id, paymentMode, mapIdAndMonth[month], year)
