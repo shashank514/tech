@@ -22,7 +22,6 @@ func (t *YpExpenseDate) TableName() string {
 
 func init() {
 	orm.RegisterModel(new(YpExpenseDate))
-	orm.Debug = true
 }
 
 func (t *YpExpenseDate) AddYpExpenseDate() (id int64, err error) {

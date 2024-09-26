@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/tech/handler/expense"
+	"github.com/tech/handler/investment"
 	"github.com/tech/handler/userLogin"
 	"net/http"
 	"os"
@@ -108,6 +109,7 @@ func (app *application) routes(r *gin.Engine) {
 	r.POST("/otp", app.handleLogin)
 	userLogin.SetupRoutes(r.Group("/login"))
 	expense.SetupRoutes(r.Group("/expense"))
+	investment.SetupRoutes(r.Group("/investment"))
 
 }
 
