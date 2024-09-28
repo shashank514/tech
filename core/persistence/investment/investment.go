@@ -6,12 +6,14 @@ import (
 )
 
 type Investment struct {
-	StockNamePersistence YpStockName
+	StockNamePersistence     YpStockName
+	InvestmentBuyPersistence YpInvestmentBuy
 }
 
 func InvestmentPersistence() *Investment {
 	return &Investment{
-		StockNamePersistence: YpStockNameDetails(),
+		StockNamePersistence:     YpStockNameDetails(),
+		InvestmentBuyPersistence: YpInvestmentBuyDetails(),
 	}
 }
 
@@ -21,4 +23,12 @@ type YpStockName interface {
 
 func YpStockNameDetails() YpStockName {
 	return &beego.BeegoStockName{}
+}
+
+type YpInvestmentBuy interface {
+	AddYpInvestmentBuyDetails(newEntry *domain.InvestmentBuyDetails) (int64, error)
+}
+
+func YpInvestmentBuyDetails() YpInvestmentBuy {
+	return &beego.BeegoInvestmentBuyDetails{}
 }

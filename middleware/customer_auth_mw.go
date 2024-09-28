@@ -44,7 +44,7 @@ func CustomerAuthMiddleware(userPersistence user.YpUser) gin.HandlerFunc {
 		tokenExpert, err := CheckTokenExpire(cast.ToString(getData["tokenExpert"]))
 		if err != nil || tokenExpert {
 			fmt.Println(functionName, "token validation failed ", err)
-			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			c.AbortWithStatusJSON(http.StatusOK, response)
 			return
 		}
 

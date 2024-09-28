@@ -20,6 +20,8 @@ func SetupRoutes(router *gin.RouterGroup) {
 	investmentSvc := investment2.AllInvestmentService(messages, investmentPersist)
 
 	getName := investment3.GetSelectCategoryDetails(investmentSvc)
+	addNewInvestment := investment3.UserNewInvestment(investmentSvc)
 
 	router.GET("/getName", getName)
+	router.POST("/addInvestment", addNewInvestment)
 }
