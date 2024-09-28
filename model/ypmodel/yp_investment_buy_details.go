@@ -8,7 +8,7 @@ import (
 type YpInvestmentBuyDetails struct {
 	Id             int       `orm:"column(id);auto"`
 	Uid            int       `orm:"column(uid);null"`
-	Date           int       `orm:"column(uid);null"`
+	Date           int       `orm:"column(date);null"`
 	Month          string    `orm:"column(month);null"`
 	Year           int       `orm:"column(year);null"`
 	Type           string    `orm:"column(type);null"`
