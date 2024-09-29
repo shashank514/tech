@@ -17,13 +17,14 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	var CategoriesExpenses []string
 	var DateLabels []string
 	var DateExpenses []string
+	var totalYearExpenses float64
 
 	fmt.Println("user id ", user.Id, "month ", month, "year ", year)
 
 	userAllDetails, err := t.expensePersistence.ExpenseDetailsPersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, "no Expenses of user err :", err)
-		return domain.Response{Code: "452", Msg: "err.Error()"}
+		return domain.Response{Code: "452", Msg: err.Error()}
 	}
 
 	if userAllDetails == nil {
@@ -46,7 +47,7 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	userDetailsByDate, err := t.expensePersistence.ExpenseDatePersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, err)
-		return domain.Response{Code: "452", Msg: "err.Error()"}
+		return domain.Response{Code: "452", Msg: err.Error()}
 	}
 
 	if userDetailsByDate == nil {
@@ -65,6 +66,26 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 
 	response.DateLabels = DateLabels
 	response.DateExpenses = DateExpenses
+
+	userMonthExpenses, err := t.expensePersistence.MonthIncomeExpensePersistence.GetMonthIncomeExpenseByYear(user.Id, year)
+	if err != nil {
+		fmt.Println(funcName, err)
+		return domain.Response{Code: "452", Msg: err.Error()}
+	}
+
+	if userMonthExpenses == nil {
+		fmt.Println(funcName, "no Expenses of user err :", err)
+		return domain.Response{Code: "453", Msg: "expenses not found"}
+	}
+
+	for _, details := range userMonthExpenses {
+		totalYearExpenses += cast.ToFloat64(details.ExpensesAmount)
+		if details.Month == mapIdAndMonth[month] {
+			response.TotalMonthExpenses = cast.ToString(details.ExpensesAmount)
+		}
+	}
+
+	response.TotalMonthExpenses = cast.ToString(totalYearExpenses)
 
 	return domain.Response{Code: "200", Msg: "success", Model: response}
 }

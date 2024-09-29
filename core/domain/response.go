@@ -24,6 +24,8 @@ type UserExpenseResponse struct {
 	CategoriesExpenses []string `json:"categoriesExpenses"`
 	DateLabels         []string `json:"dateLabels"`
 	DateExpenses       []string `json:"dateExpenses"`
+	TotalYearExpenses  string   `json:"totalYearExpenses"`
+	TotalMonthExpenses string   `json:"totalMonthExpenses"`
 }
 
 type CategoryExpenseResponse struct {

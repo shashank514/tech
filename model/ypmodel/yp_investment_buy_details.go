@@ -39,6 +39,6 @@ func (t *YpInvestmentBuyDetails) AddYpInvestmentBuyDetails() (int64, error) {
 func (t *YpInvestmentBuyDetails) GetAllYpInvestmentBuyDetailsByUid(uid int) (data []*YpInvestmentBuyDetails, err error) {
 	o := orm.NewOrm()
 	data = []*YpInvestmentBuyDetails{}
-	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).All(&data)
+	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("enable", 1).All(&data)
 	return
 }
