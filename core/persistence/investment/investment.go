@@ -6,14 +6,16 @@ import (
 )
 
 type Investment struct {
-	StockNamePersistence     YpStockName
-	InvestmentBuyPersistence YpInvestmentBuy
+	StockNamePersistence         YpStockName
+	InvestmentBuyPersistence     YpInvestmentBuy
+	InvestmentDetailsPersistence YpInvestmentDetails
 }
 
 func InvestmentPersistence() *Investment {
 	return &Investment{
-		StockNamePersistence:     YpStockNameDetails(),
-		InvestmentBuyPersistence: YpInvestmentBuyDetails(),
+		StockNamePersistence:         YpStockNameDetails(),
+		InvestmentBuyPersistence:     YpInvestmentBuyDetails(),
+		InvestmentDetailsPersistence: InvestmentDetails(),
 	}
 }
 
@@ -27,8 +29,19 @@ func YpStockNameDetails() YpStockName {
 
 type YpInvestmentBuy interface {
 	AddYpInvestmentBuyDetails(newEntry *domain.InvestmentBuyDetails) (int64, error)
+	GetAllYpInvestmentBuyDetailsByUid(uid int) (data []*domain.InvestmentBuyDetails, err error)
 }
 
 func YpInvestmentBuyDetails() YpInvestmentBuy {
 	return &beego.BeegoInvestmentBuyDetails{}
+}
+
+type YpInvestmentDetails interface {
+	AddYpInvestmentDetails(data *domain.InvestmentDetails) (int64, error)
+	GetUserInvestmentDetailsByUid(uid int) (*domain.InvestmentDetails, error)
+	UpdateYpInvestmentDetailsByColumns(data *domain.InvestmentDetails, column ...string) (err error)
+}
+
+func InvestmentDetails() YpInvestmentDetails {
+	return &beego.BeegoInvestmentDetails{}
 }

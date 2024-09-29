@@ -21,7 +21,9 @@ func SetupRoutes(router *gin.RouterGroup) {
 
 	getName := investment3.GetSelectCategoryDetails(investmentSvc)
 	addNewInvestment := investment3.UserNewInvestment(investmentSvc)
+	investmentDetails := investment3.GetUserAllInvestments(investmentSvc)
 
 	router.GET("/getName", getName)
 	router.POST("/addInvestment", addNewInvestment)
+	router.GET("/getInvestmentDetails", investmentDetails)
 }

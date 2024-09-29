@@ -32,3 +32,29 @@ type CategoryExpenseResponse struct {
 	PaymentModeNames    []string   `json:"paymentModeNames"`
 	UserPaymentExpense  []*Expense `json:"paymentExpense"`
 }
+
+type InvestmentDetailsResponse struct {
+	UserInvested                  bool                       `json:"userInvested"`
+	TotalInvestedAmount           string                     `json:"totalInvestedAmount"`
+	PresentInvestedAmount         string                     `json:"presentInvestedAmount"`
+	ProfitAfter                   string                     `json:"profitAfter"`
+	LossAfter                     string                     `json:"lossAfter"`
+	InvestmentCategoryLabels      []string                   `json:"investmentCategoryLabels"`
+	InvestmentCategoriesExpenses  []string                   `json:"investmentCategoriesExpenses"`
+	InvestmentCategoriesTable     []InvestmentDetailsToTable `json:"investmentCategoriesTable"`
+	StockInvestmentLabels         []string                   `json:"stockInvestmentLabels"`
+	StockInvestmentExpense        []string                   `json:"stockInvestmentExpense"`
+	StockInvestmentTable          []InvestmentDetailsToTable `json:"stockInvestmentTable"`
+	MutualFundsInvestmentLabels   []string                   `json:"mutualFundsInvestmentLabels"`
+	MutualFundsInvestmentExpenses []string                   `json:"mutualFundsInvestmentExpenses"`
+	MutualFundsInvestmentTable    []InvestmentDetailsToTable `json:"mutualFundsInvestmentTable"`
+	FDInvestmentLabels            []string                   `json:"fdInvestmentLabels"`
+	FDInvestmentExpense           []string                   `json:"fdInvestmentExpense"`
+	FDInvestmentTable             []InvestmentDetailsToTable `json:"fdInvestmentTable"`
+}
+
+type InvestmentDetailsToTable struct {
+	Name       string `json:"name"`
+	Amount     string `json:"amount"`
+	Percentage string `json:"percentage"`
+}

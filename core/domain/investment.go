@@ -34,3 +34,14 @@ type InvestmentBuyDetails struct {
 	UpdatedOn      time.Time
 	CreatedOn      time.Time
 }
+
+type InvestmentDetails struct {
+	Id                      int
+	Uid                     int
+	TotalInvestmentAmount   string
+	PresentInvestmentAmount string
+	ProfitAfterSellAmount   string
+	LossAfterSellAmount     string
+	UpdatedOn               time.Time
+	CreatedOn               time.Time
+}

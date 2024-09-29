@@ -35,3 +35,10 @@ func init() {
 func (t *YpInvestmentBuyDetails) AddYpInvestmentBuyDetails() (int64, error) {
 	return orm.NewOrm().Insert(t)
 }
+
+func (t *YpInvestmentBuyDetails) GetAllYpInvestmentBuyDetailsByUid(uid int) (data []*YpInvestmentBuyDetails, err error) {
+	o := orm.NewOrm()
+	data = []*YpInvestmentBuyDetails{}
+	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).All(&data)
+	return
+}
