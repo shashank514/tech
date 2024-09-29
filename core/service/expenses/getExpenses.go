@@ -21,6 +21,26 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 
 	fmt.Println("user id ", user.Id, "month ", month, "year ", year)
 
+	userMonthExpenses, err := t.expensePersistence.MonthIncomeExpensePersistence.GetMonthIncomeExpenseByYear(user.Id, year)
+	if err != nil {
+		fmt.Println(funcName, err)
+		return domain.Response{Code: "452", Msg: err.Error()}
+	}
+
+	if userMonthExpenses == nil {
+		fmt.Println(funcName, "no Expenses of user err :", err)
+		return domain.Response{Code: "453", Msg: "expenses not found"}
+	}
+
+	for _, details := range userMonthExpenses {
+		totalYearExpenses += cast.ToFloat64(details.ExpensesAmount)
+		if details.Month == mapIdAndMonth[month] {
+			response.TotalMonthExpenses = cast.ToString(details.ExpensesAmount)
+		}
+	}
+
+	response.TotalYearExpenses = cast.ToString(totalYearExpenses)
+
 	userAllDetails, err := t.expensePersistence.ExpenseDetailsPersistence.GetYpExpenseDateById(user.Id, mapIdAndMonth[month], year)
 	if err != nil {
 		fmt.Println(funcName, "no Expenses of user err :", err)
@@ -28,9 +48,8 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	}
 
 	if userAllDetails == nil {
-
 		fmt.Println(funcName, "no Expenses of user")
-		return domain.Response{Code: "453", Msg: "expenses not found"}
+		return domain.Response{Code: "200", Msg: "expenses not found", Model: response}
 	}
 
 	for _, details := range userAllDetails {
@@ -52,7 +71,7 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 
 	if userDetailsByDate == nil {
 		fmt.Println(funcName, "no Expenses of user err :", err)
-		return domain.Response{Code: "453", Msg: "expenses not found"}
+		return domain.Response{Code: "200", Msg: "expenses not found", Model: response}
 	}
 
 	for _, details := range userDetailsByDate {
@@ -66,26 +85,6 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 
 	response.DateLabels = DateLabels
 	response.DateExpenses = DateExpenses
-
-	userMonthExpenses, err := t.expensePersistence.MonthIncomeExpensePersistence.GetMonthIncomeExpenseByYear(user.Id, year)
-	if err != nil {
-		fmt.Println(funcName, err)
-		return domain.Response{Code: "452", Msg: err.Error()}
-	}
-
-	if userMonthExpenses == nil {
-		fmt.Println(funcName, "no Expenses of user err :", err)
-		return domain.Response{Code: "453", Msg: "expenses not found"}
-	}
-
-	for _, details := range userMonthExpenses {
-		totalYearExpenses += cast.ToFloat64(details.ExpensesAmount)
-		if details.Month == mapIdAndMonth[month] {
-			response.TotalMonthExpenses = cast.ToString(details.ExpensesAmount)
-		}
-	}
-
-	response.TotalYearExpenses = cast.ToString(totalYearExpenses)
 
 	return domain.Response{Code: "200", Msg: "success", Model: response}
 }
