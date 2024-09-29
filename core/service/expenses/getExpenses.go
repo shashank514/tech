@@ -17,7 +17,7 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	var CategoriesExpenses []string
 	var DateLabels []string
 	var DateExpenses []string
-	var totalYearExpenses int
+	totalYearExpenses := 0
 
 	fmt.Println("user id ", user.Id, "month ", month, "year ", year)
 
