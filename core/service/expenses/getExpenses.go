@@ -17,7 +17,7 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	var CategoriesExpenses []string
 	var DateLabels []string
 	var DateExpenses []string
-	var totalYearExpenses float64
+	var totalYearExpenses int
 
 	fmt.Println("user id ", user.Id, "month ", month, "year ", year)
 
@@ -79,7 +79,7 @@ func (t *Expenses) GetUserExpenses(ctx context.Context, user *domain.User, month
 	}
 
 	for _, details := range userMonthExpenses {
-		totalYearExpenses += cast.ToFloat64(details.ExpensesAmount)
+		totalYearExpenses += cast.ToInt(details.ExpensesAmount)
 		if details.Month == mapIdAndMonth[month] {
 			response.TotalMonthExpenses = cast.ToString(details.ExpensesAmount)
 		}
