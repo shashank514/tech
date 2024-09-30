@@ -166,7 +166,7 @@ func (s *Investment) GetInvestmentDetails(ctx context.Context, user *domain.User
 	for category, amount := range stockInvestment {
 		stockCategoryLabels = append(stockCategoryLabels, category)
 		stockCategoriesExpenses = append(stockCategoriesExpenses, cast.ToString(amount))
-		percent := (amount / cast.ToFloat64(investmentCategory[utilities.ConstStock])) * 100
+		percent := (cast.ToInt(amount) / cast.ToInt(investmentCategory[utilities.ConstStock])) * 100
 		stockCategoryTable = append(stockCategoryTable, domain.InvestmentDetailsToTable{
 			Name:       category,
 			Amount:     cast.ToString(amount),
@@ -181,7 +181,7 @@ func (s *Investment) GetInvestmentDetails(ctx context.Context, user *domain.User
 	for category, amount := range mutualFundsInvestment {
 		mutualFundsCategoryLabels = append(mutualFundsCategoryLabels, category)
 		mutualFundsCategoryExpenses = append(mutualFundsCategoryExpenses, cast.ToString(amount))
-		percent := (amount / cast.ToFloat64(investmentCategory[utilities.ConstMutualFund])) * 100
+		percent := (cast.ToInt(amount) / cast.ToInt(investmentCategory[utilities.ConstMutualFund])) * 100
 		mutualFundsCategoryTable = append(mutualFundsCategoryTable, domain.InvestmentDetailsToTable{
 			Name:       category,
 			Amount:     cast.ToString(amount),
@@ -196,7 +196,7 @@ func (s *Investment) GetInvestmentDetails(ctx context.Context, user *domain.User
 	for category, amount := range fdInvestment {
 		fdInvestmentLabels = append(fdInvestmentLabels, category)
 		fdInvestmentExpenses = append(fdInvestmentExpenses, cast.ToString(amount))
-		percent := (amount / cast.ToFloat64(investmentCategory[utilities.ConstFd])) * 100
+		percent := (cast.ToInt(amount) / cast.ToInt(investmentCategory[utilities.ConstFd])) * 100
 		fdCategoryTable = append(fdCategoryTable, domain.InvestmentDetailsToTable{
 			Name:       category,
 			Amount:     cast.ToString(amount),
