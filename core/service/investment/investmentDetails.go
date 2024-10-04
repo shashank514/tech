@@ -283,8 +283,8 @@ func (s *Investment) GetHoldingPrice(user *domain.User, category string) (invest
 				singleDetails.MktPrice = cast.ToString(stockDetails.Price)
 				singleDetails.CurrentAmount = cast.ToString(cast.ToInt(stockDetails.Price) * cast.ToInt(singleDetails.Quantity))
 				singleDetails.TotalReturns = cast.ToString(cast.ToInt(singleDetails.CurrentAmount) - cast.ToInt(singleDetails.InvestedAmount))
-				currents += cast.ToInt(singleDetails.CurrentAmount)
-				totalReturns += cast.ToInt(singleDetails.TotalReturns)
+				currents = currents + (cast.ToInt(stockDetails.Price) * cast.ToInt(singleDetails.Quantity))
+				totalReturns = totalReturns + (cast.ToInt(singleDetails.CurrentAmount) - cast.ToInt(singleDetails.InvestedAmount))
 			}
 		}
 		holdingDetails = append(holdingDetails, singleDetails)
