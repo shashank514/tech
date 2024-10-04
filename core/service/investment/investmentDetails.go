@@ -294,10 +294,8 @@ func (s *Investment) GetHoldingPrice(user *domain.User, category string) (invest
 		invested = cast.ToString(investeds)
 	}
 	if currents > 0 {
-		currents = cast.ToInt(currents)
+		current = cast.ToString(currents)
 	}
-	if totalReturns > 0 {
-		totalReturn = cast.ToString(totalReturns)
-	}
+	totalReturn = cast.ToString(totalReturns)
 	return
 }
