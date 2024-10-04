@@ -210,3 +210,94 @@ func (s *Investment) GetInvestmentDetails(ctx context.Context, user *domain.User
 
 	return domain.Response{Code: "200", Msg: "success", Model: response}
 }
+
+func (s *Investment) GetUserHoldings(ctx context.Context, user *domain.User) domain.Response {
+	//funcName := "GetUserHoldings"
+	holdingsDetails := domain.InvestmentHoldingResponse{}
+
+	holdingsDetails.StockInvestment, holdingsDetails.StockCurrent, holdingsDetails.StockTotalReturn, holdingsDetails.AllShareDetails = s.GetHoldingPrice(user, utilities.ConstStock)
+	return domain.Response{Code: "200", Msg: "success", Model: holdingsDetails}
+}
+
+func (s *Investment) GetHoldingPrice(user *domain.User, category string) (invested string, current string, totalReturn string, holdingDetails []domain.HoldingDetails) {
+	funcName := "GetHoldingPrice"
+	checkName := make(map[string]bool)
+	var allDetails = make(map[string]map[string]string)
+
+	var investeds int
+	var currents int
+	var totalReturns int
+
+	getDetails, err := s.investment.InvestmentBuyPersistence.GetInvestmentBuyDetailsByType(category, user.Id)
+	if err == orm.ErrNoRows {
+		return
+	} else if err != nil {
+		fmt.Println(funcName, err)
+		return
+	}
+
+	for _, details := range getDetails {
+		if checkName[details.Name] {
+			allDetails[details.Name]["AvgCount"] = cast.ToString(cast.ToInt(allDetails[details.Name]["AvgCount"]) + 1)
+			allDetails[details.Name]["Quantity"] = cast.ToString(cast.ToInt(allDetails[details.Name]["Quantity"]) + cast.ToInt(details.RemainingCount))
+			allDetails[details.Name]["InvestedAmount"] = cast.ToString(cast.ToInt(allDetails[details.Name]["InvestedAmount"]) + (cast.ToInt(details.RemainingCount) * cast.ToInt(details.AmountPerBuy)))
+			allDetails[details.Name]["AvgPrice"] = cast.ToString((cast.ToInt(allDetails[details.Name]["AvgPrice"]) + cast.ToInt(details.AmountPerBuy)) / cast.ToInt(allDetails[details.Name]["AvgCount"]))
+			if allDetails[details.Name]["Symbol"] == "" {
+				allDetails[details.Name]["Symbol"] = details.Symbol
+			}
+		} else {
+			checkName[details.Name] = true
+			allDetails[details.Name] = make(map[string]string)
+			allDetails[details.Name]["Quantity"] = details.RemainingCount
+			allDetails[details.Name]["AvgPrice"] = details.AmountPerBuy
+			allDetails[details.Name]["InvestedAmount"] = cast.ToString(cast.ToInt(details.RemainingCount) * cast.ToInt(details.AmountPerBuy))
+			allDetails[details.Name]["Symbol"] = details.Symbol
+			allDetails[details.Name]["AvgCount"] = "1"
+		}
+	}
+
+	for name, details := range allDetails {
+		singleDetails := domain.HoldingDetails{}
+		var symbol string
+		singleDetails.Name = name
+		for key, value := range details {
+			switch key {
+			case "Quantity":
+				singleDetails.Quantity = value
+			case "AvgPrice":
+				singleDetails.AvgPrice = value
+			case "InvestedAmount":
+				singleDetails.InvestedAmount = value
+				investeds += cast.ToInt(value)
+			case "Symbol":
+				symbol = value
+			}
+		}
+		if symbol != "" {
+			switch category {
+			case utilities.ConstStock:
+				stockDetails, err := s.investment.StockNamePersistence.GetYpStockNameBySymbol(symbol)
+				if err != nil {
+					return
+				}
+				singleDetails.MktPrice = cast.ToString(stockDetails.Price)
+				singleDetails.CurrentAmount = cast.ToString(cast.ToInt(stockDetails.Price) * cast.ToInt(singleDetails.Quantity))
+				singleDetails.TotalReturns = cast.ToString(cast.ToInt(singleDetails.CurrentAmount) - cast.ToInt(singleDetails.InvestedAmount))
+				currents += cast.ToInt(singleDetails.CurrentAmount)
+				totalReturns += cast.ToInt(singleDetails.TotalReturns)
+			}
+		}
+		holdingDetails = append(holdingDetails, singleDetails)
+	}
+
+	if investeds > 0 {
+		invested = cast.ToString(investeds)
+	}
+	if currents > 0 {
+		currents = cast.ToInt(currents)
+	}
+	if totalReturns > 0 {
+		totalReturn = cast.ToString(totalReturns)
+	}
+	return
+}

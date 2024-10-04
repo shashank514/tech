@@ -21,6 +21,7 @@ func InvestmentPersistence() *Investment {
 
 type YpStockName interface {
 	GetAllStockNames() (data []*domain.StockNameInJson, err error)
+	GetYpStockNameBySymbol(symbol string) (data *domain.StockName, err error)
 }
 
 func YpStockNameDetails() YpStockName {
@@ -30,6 +31,7 @@ func YpStockNameDetails() YpStockName {
 type YpInvestmentBuy interface {
 	AddYpInvestmentBuyDetails(newEntry *domain.InvestmentBuyDetails) (int64, error)
 	GetAllYpInvestmentBuyDetailsByUid(uid int) (data []*domain.InvestmentBuyDetails, err error)
+	GetInvestmentBuyDetailsByType(types string, uid int) (data []*domain.InvestmentBuyDetails, err error)
 }
 
 func YpInvestmentBuyDetails() YpInvestmentBuy {

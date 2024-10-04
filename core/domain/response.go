@@ -60,3 +60,20 @@ type InvestmentDetailsToTable struct {
 	Amount     string `json:"amount"`
 	Percentage string `json:"percentage"`
 }
+
+type InvestmentHoldingResponse struct {
+	StockInvestment  string           `json:"stockInvestment"`
+	StockCurrent     string           `json:"stockCurrent"`
+	StockTotalReturn string           `json:"stockTotalReturn"`
+	AllShareDetails  []HoldingDetails `json:"allShareDetails"`
+}
+
+type HoldingDetails struct {
+	Name           string `json:"name"`
+	Quantity       string `json:"quantity"`
+	AvgPrice       string `json:"avgPrice"`
+	MktPrice       string `json:"mktPrice"`
+	InvestedAmount string `json:"investedAmount"`
+	CurrentAmount  string `json:"currentAmount"`
+	TotalReturns   string `json:"totalReturns"`
+}

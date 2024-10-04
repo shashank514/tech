@@ -42,3 +42,10 @@ func (t *YpStockName) GetYpStockNameByName(name string) (v *YpStockName, err err
 	err = o.QueryTable(t.TableName()).Filter("stock_name", name).One(v)
 	return
 }
+
+func (t *YpStockName) GetYpStockNameBySymbol(symbol string) (v *YpStockName, err error) {
+	o := orm.NewOrm()
+	v = &YpStockName{}
+	err = o.QueryTable(t.TableName()).Filter("symbol", symbol).One(v)
+	return
+}

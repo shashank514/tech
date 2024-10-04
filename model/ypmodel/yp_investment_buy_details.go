@@ -42,3 +42,10 @@ func (t *YpInvestmentBuyDetails) GetAllYpInvestmentBuyDetailsByUid(uid int) (dat
 	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("enable", 1).All(&data)
 	return
 }
+
+func (t *YpInvestmentBuyDetails) GetInvestmentBuyDetailsByType(types string, uid int) (data []*YpInvestmentBuyDetails, err error) {
+	o := orm.NewOrm()
+	data = []*YpInvestmentBuyDetails{}
+	_, err = o.QueryTable(t.TableName()).Filter("uid", uid).Filter("type", types).Filter("enable", 1).All(&data)
+	return
+}

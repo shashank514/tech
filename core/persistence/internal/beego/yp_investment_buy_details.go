@@ -23,6 +23,17 @@ func (t *BeegoInvestmentBuyDetails) GetAllYpInvestmentBuyDetailsByUid(uid int) (
 	return nil, err
 }
 
+func (t *BeegoInvestmentBuyDetails) GetInvestmentBuyDetailsByType(types string, uid int) (data []*domain.InvestmentBuyDetails, err error) {
+	v, err := new(ypmodel.YpInvestmentBuyDetails).GetInvestmentBuyDetailsByType(types, uid)
+	if err == nil {
+		for _, details := range v {
+			data = append(data, t.convertModelToDomain(details))
+		}
+		return data, nil
+	}
+	return nil, err
+}
+
 func (t *BeegoInvestmentBuyDetails) convertDomainToModel(data *domain.InvestmentBuyDetails) *ypmodel.YpInvestmentBuyDetails {
 	return &ypmodel.YpInvestmentBuyDetails{
 		Id:             data.Id,

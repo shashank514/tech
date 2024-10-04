@@ -86,3 +86,23 @@ func GetUserAllInvestments(svc driver.InvestmentService) gin.HandlerFunc {
 		c.JSON(http.StatusOK, response)
 	}
 }
+
+func GetInvestedHoldings(svc driver.InvestmentService) gin.HandlerFunc {
+	functionName := "GetInvestedHoldings"
+	var exeCtx context.Context
+	return func(c *gin.Context) {
+		exeCtx = util.SetContext(c)
+
+		user := c.Keys["customer"]
+		if user == nil {
+			fmt.Println(functionName, "invalid credentials")
+			response := domain.Response{Code: "459", Msg: "Session has expired"}
+			c.JSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		loggedUser := user.(*domain.User)
+		response := svc.GetUserHoldings(exeCtx, loggedUser)
+		c.JSON(http.StatusOK, response)
+	}
+}
