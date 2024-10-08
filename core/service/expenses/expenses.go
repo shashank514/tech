@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/astaxie/beego/orm"
+	"github.com/spf13/cast"
 	"github.com/tech/cloud/message"
 	"github.com/tech/core/domain"
 	"github.com/tech/core/persistence/expense"
@@ -126,7 +127,7 @@ func (t *Expenses) AddExpense(ctx context.Context, user *domain.User, request *d
 	} else if err == nil {
 
 		// add the amount to existing amount
-		dateDetails.Amount += request.Amount
+		dateDetails.Amount = cast.ToString(cast.ToInt(dateDetails.Amount) + cast.ToInt(request.Amount))
 		dateDetails.UpdatedOn = time.Now()
 		updateColumns := []string{
 			"amount",
@@ -175,7 +176,7 @@ func (t *Expenses) AddExpense(ctx context.Context, user *domain.User, request *d
 			}
 		}
 
-		monthDetails.ExpensesAmount += request.Amount
+		monthDetails.ExpensesAmount = cast.ToString(cast.ToInt(monthDetails.ExpensesAmount) + cast.ToInt(request.Amount))
 		monthDetails.UpdatedOn = time.Now()
 		updateColumns := []string{
 			"income_amount",

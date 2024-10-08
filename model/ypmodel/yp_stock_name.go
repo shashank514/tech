@@ -7,10 +7,13 @@ import (
 
 type YpStockName struct {
 	Id        int       `orm:"column(id);auto"`
-	Uid       int       `orm:"column(uid);null"`
+	Enable    int       `orm:"column(enable);null"`
 	StockName string    `orm:"column(stock_name);null"`
 	Symbol    string    `orm:"column(symbol);null"`
 	Price     float64   `orm:"column(price);null"`
+	Category  string    `orm:"column(category);null"`
+	Sector    string    `orm:"column(sector);null"`
+	Industry  string    `orm:"column(industry);null"`
 	UpdatedOn time.Time `orm:"column(updatedOn);type(datetime);null;auto_now"`
 	CreatedOn time.Time `orm:"column(createdOn);type(datetime);null;auto_now_add"`
 }
@@ -33,6 +36,13 @@ func (t *YpStockName) GetAllYpStockName() (list []*YpStockName, err error) {
 	o := orm.NewOrm()
 	list = []*YpStockName{}
 	_, err = o.QueryTable(t.TableName()).All(&list)
+	return
+}
+
+func (t *YpStockName) GetAllYpDetailsNameByCategory(category string) (list []*YpStockName, err error) {
+	o := orm.NewOrm()
+	list = []*YpStockName{}
+	_, err = o.QueryTable(t.TableName()).Filter("enable", 1).Filter("category", category).All(&list)
 	return
 }
 

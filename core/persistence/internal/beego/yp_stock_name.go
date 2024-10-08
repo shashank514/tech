@@ -18,6 +18,17 @@ func (t *BeegoStockName) GetAllStockNames() (data []*domain.StockNameInJson, err
 	return nil, err
 }
 
+func (t *BeegoStockName) GetAllYpDetailsNameByCategory(category string) (data []*domain.StockNameInJson, err error) {
+	v, err := new(ypmodel.YpStockName).GetAllYpDetailsNameByCategory(category)
+	if err == nil {
+		for _, details := range v {
+			data = append(data, t.ConvertToStockNameInJson(details))
+		}
+		return data, nil
+	}
+	return nil, err
+}
+
 func (t *BeegoStockName) GetYpStockNameBySymbol(symbol string) (data *domain.StockName, err error) {
 	v, err := new(ypmodel.YpStockName).GetYpStockNameBySymbol(symbol)
 	if err != nil {
@@ -29,9 +40,13 @@ func (t *BeegoStockName) GetYpStockNameBySymbol(symbol string) (data *domain.Sto
 func (t *BeegoStockName) convertDomainToModel(data *domain.StockName) *ypmodel.YpStockName {
 	return &ypmodel.YpStockName{
 		Id:        data.Id,
+		Enable:    data.Enable,
 		StockName: data.StockName,
 		Symbol:    data.Symbol,
 		Price:     data.Price,
+		Category:  data.Category,
+		Sector:    data.Sector,
+		Industry:  data.Industry,
 		UpdatedOn: data.UpdatedOn,
 		CreatedOn: data.CreatedOn,
 	}
@@ -40,9 +55,13 @@ func (t *BeegoStockName) convertDomainToModel(data *domain.StockName) *ypmodel.Y
 func (t *BeegoStockName) convertModelToDomain(data *ypmodel.YpStockName) *domain.StockName {
 	return &domain.StockName{
 		Id:        data.Id,
+		Enable:    data.Enable,
 		StockName: data.StockName,
 		Symbol:    data.Symbol,
 		Price:     data.Price,
+		Category:  data.Category,
+		Sector:    data.Sector,
+		Industry:  data.Industry,
 		UpdatedOn: data.UpdatedOn,
 		CreatedOn: data.CreatedOn,
 	}

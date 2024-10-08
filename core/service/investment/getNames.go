@@ -7,6 +7,7 @@ import (
 	"github.com/tech/core/domain"
 	"github.com/tech/core/persistence/investment"
 	"github.com/tech/core/service/investment/driver"
+	"github.com/tech/utilities"
 )
 
 type Investment struct {
@@ -63,12 +64,12 @@ func (s *Investment) GetSelectNames(ctx context.Context, user *domain.User, cate
 	var err error
 
 	switch category {
-	case "Stock":
-		response, err = s.investment.StockNamePersistence.GetAllStockNames()
+	case utilities.ConstStock, utilities.ConstMutualFund:
+		response, err = s.investment.StockNamePersistence.GetAllYpDetailsNameByCategory(category)
 		if err != nil {
 			fmt.Println(funcName, " error while getting stock name err : ", err)
 		}
-	case "FD":
+	case utilities.ConstFd:
 		for _, name := range bankName {
 			response = append(response, &domain.StockNameInJson{Name: name})
 		}

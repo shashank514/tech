@@ -4,9 +4,13 @@ import "time"
 
 type StockName struct {
 	Id        int
+	Enable    int
 	StockName string
 	Symbol    string
 	Price     float64
+	Category  string
+	Sector    string
+	Industry  string
 	UpdatedOn time.Time
 	CreatedOn time.Time
 }

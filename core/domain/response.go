@@ -62,10 +62,14 @@ type InvestmentDetailsToTable struct {
 }
 
 type InvestmentHoldingResponse struct {
-	StockInvestment  string           `json:"stockInvestment"`
-	StockCurrent     string           `json:"stockCurrent"`
-	StockTotalReturn string           `json:"stockTotalReturn"`
-	AllShareDetails  []HoldingDetails `json:"allShareDetails"`
+	StockInvestment        string           `json:"stockInvestment"`
+	StockCurrent           string           `json:"stockCurrent"`
+	StockTotalReturn       string           `json:"stockTotalReturn"`
+	AllShareDetails        []HoldingDetails `json:"allShareDetails"`
+	MutualFundsInvestment  string           `json:"mutualFundsInvestment"`
+	MutualFundsCurrent     string           `json:"mutualFundsCurrent"`
+	MutualFundsTotalReturn string           `json:"mutualFundsTotalReturn"`
+	AllMutualFundsDetails  []HoldingDetails `json:"allMutualFundsDetails"`
 }
 
 type HoldingDetails struct {

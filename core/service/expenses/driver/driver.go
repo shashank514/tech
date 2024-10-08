@@ -10,4 +10,5 @@ type ExpenseService interface {
 	AddExpense(ctx context.Context, user *domain.User, request *domain.ExpenseRequest) domain.Response
 	GetUserExpenses(ctx context.Context, user *domain.User, month int, year int) domain.Response
 	GetUserExpensesByCategorys(ctx context.Context, user *domain.User, categorys string, paymentMode string, month int, year int) domain.Response
+	GetMonthExpensesPdf(ctx context.Context, user *domain.User, month int, year int) domain.Response
 }

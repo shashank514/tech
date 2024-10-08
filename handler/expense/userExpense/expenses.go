@@ -81,3 +81,27 @@ func AddUserExpense(svc driver.ExpenseService) gin.HandlerFunc {
 		c.JSON(http.StatusOK, response)
 	}
 }
+
+func GetMonthExpensesPdf(svc driver.ExpenseService) gin.HandlerFunc {
+	functionName := "GetMonthExpensesPdf"
+	var exeCtx context.Context
+	return func(c *gin.Context) {
+		exeCtx = util.SetContext(c)
+
+		user := c.Keys["customer"]
+		if user == nil {
+			fmt.Println(functionName, "invalid credentials")
+			response := domain.Response{Code: "459", Msg: "Session has expired"}
+			c.JSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		loggedUser := user.(*domain.User)
+
+		month := cast.ToInt(c.Query("month"))
+		year := cast.ToInt(c.Query("year"))
+
+		response := svc.GetMonthExpensesPdf(exeCtx, loggedUser, month, year)
+		c.JSON(http.StatusOK, response)
+	}
+}

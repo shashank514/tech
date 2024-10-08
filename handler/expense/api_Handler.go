@@ -21,7 +21,9 @@ func SetupRoutes(router *gin.RouterGroup) {
 
 	getUserExpense := userExpense.GetUserExpense(expenseSvc)
 	addExpense := userExpense.AddUserExpense(expenseSvc)
+	sendExpensesPDFToMail := userExpense.GetMonthExpensesPdf(expenseSvc)
 
 	router.GET("/getExpenses", getUserExpense)
 	router.POST("/addExpenses", addExpense)
+	router.GET("/sendExpensesPDFToMail", sendExpensesPDFToMail)
 }

@@ -16,7 +16,7 @@ func (b *Login) GetUserPersonalDetails(exeCtx context.Context, user *domain.User
 	user.Gender = personalDetails.Gender
 	user.Age = personalDetails.Age
 	user.Profession = personalDetails.Profession
-	user.Status = "address"
+	user.Status = "home"
 
 	updateColumns := []string{"status", "mobile", "name", "gender", "age", "profession"}
 	err := b.userPersistence.YpUserPersistence.UpdateYpUserByColumn(user, updateColumns...)

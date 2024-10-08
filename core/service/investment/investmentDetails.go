@@ -216,6 +216,7 @@ func (s *Investment) GetUserHoldings(ctx context.Context, user *domain.User) dom
 	holdingsDetails := domain.InvestmentHoldingResponse{}
 
 	holdingsDetails.StockInvestment, holdingsDetails.StockCurrent, holdingsDetails.StockTotalReturn, holdingsDetails.AllShareDetails = s.GetHoldingPrice(user, utilities.ConstStock)
+	holdingsDetails.MutualFundsInvestment, holdingsDetails.MutualFundsCurrent, holdingsDetails.MutualFundsTotalReturn, holdingsDetails.AllMutualFundsDetails = s.GetHoldingPrice(user, utilities.ConstMutualFund)
 	return domain.Response{Code: "200", Msg: "success", Model: holdingsDetails}
 }
 
@@ -273,20 +274,15 @@ func (s *Investment) GetHoldingPrice(user *domain.User, category string) (invest
 				symbol = value
 			}
 		}
-		if symbol != "" {
-			switch category {
-			case utilities.ConstStock:
-				stockDetails, err := s.investment.StockNamePersistence.GetYpStockNameBySymbol(symbol)
-				if err != nil {
-					return
-				}
-				singleDetails.MktPrice = cast.ToString(stockDetails.Price)
-				singleDetails.CurrentAmount = cast.ToString(cast.ToInt(stockDetails.Price) * cast.ToInt(singleDetails.Quantity))
-				singleDetails.TotalReturns = cast.ToString(cast.ToInt(singleDetails.CurrentAmount) - cast.ToInt(singleDetails.InvestedAmount))
-				currents = currents + (cast.ToInt(stockDetails.Price) * cast.ToInt(singleDetails.Quantity))
-				totalReturns = totalReturns + (cast.ToInt(singleDetails.CurrentAmount) - cast.ToInt(singleDetails.InvestedAmount))
-			}
+		stockDetails, err := s.investment.StockNamePersistence.GetYpStockNameBySymbol(symbol)
+		if err != nil {
+			return
 		}
+		singleDetails.MktPrice = cast.ToString(stockDetails.Price)
+		singleDetails.CurrentAmount = cast.ToString(cast.ToInt(stockDetails.Price) * cast.ToInt(singleDetails.Quantity))
+		singleDetails.TotalReturns = cast.ToString(cast.ToInt(singleDetails.CurrentAmount) - cast.ToInt(singleDetails.InvestedAmount))
+		currents = currents + (cast.ToInt(stockDetails.Price) * cast.ToInt(singleDetails.Quantity))
+		totalReturns = totalReturns + (cast.ToInt(singleDetails.CurrentAmount) - cast.ToInt(singleDetails.InvestedAmount))
 		holdingDetails = append(holdingDetails, singleDetails)
 	}
 
