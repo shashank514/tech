@@ -190,8 +190,8 @@ func (t *Expenses) GetMonthExpensesPdf(ctx context.Context, user *domain.User, m
 		fmt.Println(funcName, "error while generate PDF :", err)
 	}
 
-	subject := ""
-	body := ""
+	subject := "Expenses of " + mapIdAndMonth[month] + " " + cast.ToString(year)
+	body := "Please find the attached " + mapIdAndMonth[month] + " expenses"
 	err = t.message.SendEmailWithPDF(pdfBuffer, user.Email, subject, body)
 	if err != nil {
 		fmt.Println(funcName, "error while send email :", err)
@@ -216,14 +216,14 @@ func (t *Expenses) GeneratePDFForMonthExpenses(user *domain.User, month string, 
 	pdf.Ln(30)
 
 	pdf.SetFont("Arial", "", 19)
-	totalYear := "Total amount spends " + year + " := " + cast.ToString(totalYearExpenses)
+	totalYear := "Total amount spends " + year + " = " + cast.ToString(totalYearExpenses)
 	subtitleWidth := pdf.GetStringWidth(totalYear)
 	pdf.SetX((pageWidth - subtitleWidth) / 2)
 	pdf.Cell(0, 10, totalYear)
 	pdf.Ln(15)
 
 	pdf.SetFont("Arial", "", 19)
-	totalMonth := "Total amount spends " + month + " := " + cast.ToString(totalMonthExpenses)
+	totalMonth := "Total amount spends " + strings.ToLower(month) + " = " + cast.ToString(totalMonthExpenses)
 	totalMonthWidth := pdf.GetStringWidth(totalMonth)
 	pdf.SetX((pageWidth - totalMonthWidth) / 2)
 	pdf.Cell(0, 10, totalMonth)
@@ -242,7 +242,7 @@ func (t *Expenses) GeneratePDFForMonthExpenses(user *domain.User, month string, 
 	pdf.SetFont("Arial", "B", 14)
 	pdf.SetFillColor(200, 220, 255) // Light blue background
 	headers := []string{"Category", "Amount", "Percentage"}
-	colWidths := []float64{40, 40, 40}
+	colWidths := []float64{50, 40, 40}
 
 	totalTableWidth := 0.0
 	for _, width := range colWidths {
